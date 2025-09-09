@@ -55,7 +55,7 @@ else:
 ext_modules = []
 ext_modules.append(
     CUDAExtension(
-        name="flash_mla_cuda",
+        name="flash_mla_old_cuda",
         sources=get_sources(),
         extra_compile_args={
             "cxx": cxx_args + get_features_args(),
@@ -96,9 +96,9 @@ except Exception as _:
 
 
 setup(
-    name="flash_mla",
+    name="flash_mla_old",
     version="1.0.0" + rev,
-    packages=find_packages(include=['flash_mla']),
+    packages=find_packages(include=['flash_mla_old']),
     ext_modules=ext_modules,
     cmdclass={"build_ext": BuildExtension},
 )

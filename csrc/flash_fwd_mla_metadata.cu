@@ -27,7 +27,9 @@ get_mla_metadata_kernel(__grid_constant__ const Mla_metadata_params params) {
     __syncwarp();
 
     if (threadIdx.x == 0) {
-        int payload = cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks;
+        // printf("total_num_blocks: %d num_sm_parts %d\n", total_num_blocks, num_sm_parts);
+        int payload = max(cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks,fixed_overhead_num_blocks*2);
+        // int payload = cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks;  //!
 
         int now_idx = 0, now_block = 0, now_n_split_idx = 0, cum_num_splits = 0;
         num_splits_shared[0] = 0;

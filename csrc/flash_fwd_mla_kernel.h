@@ -82,8 +82,8 @@ struct Flash_fwd_kernel_traits_mla {
     using SmemLayoutO = decltype(tile_to_shape(
             SmemLayoutAtomO{},
             Shape<Int<kBlockM>, Int<kHeadDimV>>{}));
-    using SmemCopyAtomO = Copy_Atom<SM90_U32x4_STSM_N, Element>;
-    using SmemCopyAtomOaccum = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, ElementAccum>;
+    using SmemCopyAtomO = Copy_Atom<SM90_U32x4_STSM_N, Element>;  //! SM90_U32x4_STSM_N  explain: unsinged 32 bit x4 store to shared memory, no transpose
+    using SmemCopyAtomOaccum = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, ElementAccum>;  //! 128 bit alignment for float 
 
     static constexpr int kGmemElemsPerLoad = sizeof(cute::uint128_t) / sizeof(Element);
     static_assert(kHeadDim % kGmemElemsPerLoad == 0, "kHeadDim must be a multiple of kGmemElemsPerLoad");
@@ -159,12 +159,22 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
 
     // Epilogue
 
-    const int split_offset = __ldg(params.num_splits_ptr + bidb);
+    const int split_offset = __ldg(params.num_splits_ptr + bidb);  //! totally offset
+
+    T0_DEBUG_PRINT("split_offset %d,bidb %d  m_block %d n_split_idx %d kNThreadsS %d\n",split_offset, bidb, m_block, n_split_idx, kNThreadsS);
 
     Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, Split>(tOrO, params.scale_softmax);
+    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
+        print(lse);
+        printf(" size %d\n",decltype(size(lse))::value);
+    }
 
     using ElementO = std::conditional_t<!Split, Element, ElementAccum>;
-    Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementO *>(shared_storage.smem_o.data())), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)
+    Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementO *>(shared_storage.smem_o.data())), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)  (64, 512)
+    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
+        print(sOaccum);
+        printf("sOaccum size %d\n",decltype(size(sOaccum))::value);
+    }
     // Partition sO to match the accumulator partitioning
     using SmemTiledCopyO = std::conditional_t<
             !Split,
@@ -177,6 +187,13 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     Tensor taccOrOaccum = smem_thr_copy_Oaccum.retile_S(rO);        // ((Atom,AtomNum), MMA_M, MMA_N)
     Tensor taccOsOaccum = smem_thr_copy_Oaccum.partition_D(sOaccum);     // ((Atom,AtomNum),PIPE_M,PIPE_N)
 
+    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+        // print(taccOrOaccum);
+        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+        print(taccOsOaccum);
+        printf("taccOsOaccum size %d\n",decltype(size(taccOsOaccum))::value);
+    }
+
     __syncthreads();
 
     cute::copy(smem_tiled_copy_Oaccum, taccOrOaccum, taccOsOaccum);
@@ -185,10 +202,14 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     const index_t row_offset_oaccum = (((split_offset + n_split_idx) * params.h + bidh) * params.seqlen_q + m_block * kBlockM) * params.d_v;
     const index_t row_offset_lse = (bidb * params.h + bidh) * params.seqlen_q + m_block * kBlockM;
     const index_t row_offset_lseaccum = ((split_offset + n_split_idx) * params.h + bidh) * params.seqlen_q + m_block * kBlockM;
+    T0_DEBUG_PRINT("row_offset_o %ld, params.o_batch_stride %ld params.o_row_stride %ld params.o_head_stride %ld bidh %d bidb %d\n",row_offset_o, params.o_batch_stride, params.o_row_stride, params.o_head_stride,bidh, bidb);
+    //! type and format symbols must match
+    T0_DEBUG_PRINT("row_offset_oaccum %ld,row_offset_lse %ld row_offset_lseaccum %ld params.h %d   params.seqlen_q  %d split_offset %d n_split_idx %d\n",row_offset_oaccum,row_offset_lse,row_offset_lseaccum, params.h,  params.seqlen_q ,split_offset, n_split_idx);
 
     Tensor gOaccum = make_tensor(make_gmem_ptr(reinterpret_cast<ElementO *>(Split ? params.oaccum_ptr : params.o_ptr) + (Split ? row_offset_oaccum : row_offset_o)),
                                  Shape<Int<kBlockM>, Int<kHeadDimV>>{},
                                  make_stride(Split ? kHeadDimV : params.o_row_stride, _1{}));
+                                 //! o_row_stride and kHeadDimV is same in this version
     Tensor gLSEaccum = make_tensor(make_gmem_ptr(reinterpret_cast<ElementAccum *>(Split ? params.softmax_lseaccum_ptr : params.softmax_lse_ptr) + (Split ? row_offset_lseaccum : row_offset_lse)),
                                    Shape<Int<kBlockM>>{}, Stride<_1>{});
 
@@ -200,7 +221,7 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
 
     __syncthreads();
 
-    if (tidx >= kNThreadsS) { return; }
+    if (tidx >= kNThreadsS) { return; } //! only use 128 threads to deal with epilogue
 
     Tensor tOrOaccum = make_tensor<ElementO>(shape(tOgOaccum));
     cute::copy(gmem_tiled_copy_Oaccum, tOsOaccum, tOrOaccum);
@@ -209,12 +230,28 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     Tensor taccOcO = thr_mma_o.partition_C(caccO);                           // ((MMA=4, X), MMA_M, MMA_K=1)
     Tensor taccOcO_row = taccOcO(make_coord(0, _, 0), _, 0);
     CUTE_STATIC_ASSERT_V(size(lse) == size(taccOcO_row));                     // MMA_M
+    if(blockIdx.z == 0 && blockIdx.x == 0 ){
+        printf("threadIdx.x %d get<1>(taccOcO_row(0)) %d, get<0>(taccOcO_row(0)) %d\n",threadIdx.x, get<1>(taccOcO_row(0)), get<0>(taccOcO_row(0)));
+    }
     if (get<1>(taccOcO_row(0)) == 0) {
 #pragma unroll
         for (int mi = 0; mi < size(lse); ++mi) {
             const int row = get<0>(taccOcO_row(mi));
-            if (row < params.seqlen_q - m_block * kBlockM) { gLSEaccum(row) = lse(mi); }
+            if(blockIdx.z == 0 && blockIdx.x == 0 ){
+                printf("threadIdx.x %d row %d, mi %d\n",threadIdx.x, row, mi);
+            }
+            if (row < params.seqlen_q - m_block * kBlockM) { gLSEaccum(row) = lse(mi); }  //! todo 
         }
+    }
+    
+    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+        // print(taccOrOaccum);
+        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+        print(lse);
+        printf("lse size %d\n",decltype(size(lse))::value);  // !
+        // print(taccOcO);
+        // printf("taccOcO size %d\n",decltype(size(taccOcO))::value);  // !  ArithTuple(0,0) o ((_2,_2,_32),_1,_1):((_1@1,_8@0,_8@1),_0,_0)taccOcO size 128
+
     }
 
     // Construct identity layout for sO
@@ -222,10 +259,22 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     // Repeat the partitioning with identity layouts
     Tensor tOcO = gmem_thr_copy_Oaccum.partition_D(cO);                           // (ACPY,ACPY_M,ACPY_K) -> (blk_m,blk_k)
     Tensor tOpO = make_tensor<bool>(make_shape(size<2>(tOgOaccum)));
+     if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+        // print(taccOrOaccum);
+        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+        print(tOrOaccum); //! ((_1,_4),_8,_8):((_0,_1),_4,_32)  si ze is 256
+        printf("tOrOaccum size %d\n",decltype(size(tOrOaccum))::value);  // !
+        print(tOgOaccum);  //!  ((_1,_4),_8,_8):((_0,_1),4096,_64)
+        printf("tOgOaccum size %d\n",decltype(size(tOgOaccum))::value); 
+
+    }
     // Clear_OOB_K must be false since we don't want to write zeros to gmem
     flash::copy</*Is_even_MN=*/false, /*Is_even_K=*/true, /*Clear_OOB_MN=*/false, /*Clear_OOB_K=*/false>(
             gmem_tiled_copy_Oaccum, tOrOaccum, tOgOaccum, tOcO, tOpO, params.seqlen_q - m_block * kBlockM
     );
+    // if(threadIdx.x == 0){
+    //     printf("testtest\n");
+    // }
 }
 
 template<typename Kernel_traits, bool Is_causal, typename SharedStorage>
@@ -438,7 +487,7 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
         cute::copy(tRow_maxsRow_max, softmax.row_max);
         cute::copy(tRow_sumsRow_sum, softmax.row_sum);
     }
-
+    T0_DEBUG_PRINT("After main loop: bidb %d bidh %d m_block %d n_split_idx %d\n", bidb, bidh, m_block, n_split_idx);
     if (NoSplit)
         store<Kernel_traits, false>(params, bidb, bidh, m_block, n_split_idx, shared_storage, tOrO, softmax);
     else
@@ -446,7 +495,7 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
 }
 
 template<typename Kernel_traits, bool Is_causal, typename SharedStorage>
-__global__ void __launch_bounds__(Kernel_traits::kNThreads, 1, 1)
+__global__ void __launch_bounds__(Kernel_traits::kNThreads, 1, 1)  // ! todo 
 flash_fwd_splitkv_mla_kernel(__grid_constant__ const Flash_fwd_mla_params params) {
     constexpr int kBlockN = Kernel_traits::kBlockN;
     const int m_block = blockIdx.x;
@@ -464,6 +513,8 @@ flash_fwd_splitkv_mla_kernel(__grid_constant__ const Flash_fwd_mla_params params
     int end_seqlen = tile_scheduler_metadata.w;
     if (begin_idx >= params.b) return;
     int begin_n_split_idx = __ldg(tile_scheduler_metadata_ptr + 4);
+    
+    T0_DEBUG_PRINT("bidh: %d, m_block: %d, partition_idx: %d, begin_idx: %d, end_idx: %d, begin_seqlen: %d, end_seqlen: %d, begin_n_split_idx: %d\n", bidh, m_block, partition_idx, begin_idx, end_idx, begin_seqlen, end_seqlen, begin_n_split_idx);
 
 #pragma unroll 1
     for (int batch_id = begin_idx; batch_id <= end_idx; ++batch_id) {
@@ -494,6 +545,9 @@ flash_fwd_splitkv_mla_combine_kernel(__grid_constant__ const Flash_fwd_mla_param
 
     const int split_offset = __ldg(params.num_splits_ptr + batch_idx);
     const int actual_num_splits = __ldg(params.num_splits_ptr + batch_idx + 1) - split_offset;
+    
+    G0_DEBUG_PRINT("actual_num_splits: %d\n", actual_num_splits);  //! 
+
     FLASH_DEVICE_ASSERT(actual_num_splits <= kMaxSplits);
     if (actual_num_splits == 1) return;
 
@@ -579,6 +633,7 @@ void run_flash_splitkv_fwd_mla(Flash_fwd_mla_params &params, cudaStream_t stream
     BOOL_SWITCH(params.is_causal, Is_causal, [&] {
         auto kernel = &flash::flash_fwd_splitkv_mla_kernel<Kernel_traits, Is_causal, SharedStorage>;
         constexpr size_t smem_size = sizeof(SharedStorage);
+        DEBUG_PRINT("smem_size %d\n",smem_size);
         CHECK_CUDA(cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, smem_size));
         kernel<<<dim3(num_m_block, params.h, params.num_sm_parts), Kernel_traits::kNThreads, smem_size, stream>>>(params);
     });

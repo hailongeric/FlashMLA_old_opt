@@ -206,19 +206,96 @@ mha_fwd_kvcache_mla(
     return {out, softmax_lse};
 }
 
-#include <Python.h>
-#include "pytorch_shim.h"
+// #include <Python.h>
+// #include "pytorch_shim.h"
 
-TORCH_LIBRARY(_flashmla_C, m) {
-    m.def("get_mla_metadata", make_pytorch_shim(&get_mla_metadata));
-    m.impl("get_mla_metadata", torch::kCUDA, make_pytorch_shim(&get_mla_metadata));
+// TORCH_LIBRARY(flash_mla_cuda, m) {
+//     m.def("get_mla_metadata", make_pytorch_shim(&get_mla_metadata));
+//     m.impl("get_mla_metadata", torch::kCUDA, make_pytorch_shim(&get_mla_metadata));
 
-    m.def("fwd_kvcache_mla", make_pytorch_shim(&mha_fwd_kvcache_mla));
-    m.impl("fwd_kvcache_mla", torch::kCUDA, make_pytorch_shim(&mha_fwd_kvcache_mla));
-}
+//     m.def("fwd_kvcache_mla", make_pytorch_shim(&mha_fwd_kvcache_mla));
+//     m.impl("fwd_kvcache_mla", torch::kCUDA, make_pytorch_shim(&mha_fwd_kvcache_mla));
+// }
 
-PyMODINIT_FUNC PyInit__flashmla_C() {
-    static struct PyModuleDef module = {
-        PyModuleDef_HEAD_INIT, "_flashmla_C", nullptr, 0, nullptr};
-    return PyModule_Create(&module);                                           
+// PyMODINIT_FUNC PyInit_flash_mla_cuda() {
+//     static struct PyModuleDef module = {
+//         PyModuleDef_HEAD_INIT, "flash_mla_cuda", nullptr, 0, nullptr};
+//     return PyModule_Create(&module);                                           
+// }
+
+
+// #include <pybind11/pybind11.h>
+// #include <pybind11/stl.h>
+
+// PYBIND11_MODULE(flash_mla_cuda, m) {
+//     m.def("get_mla_metadata", &get_mla_metadata);
+//     m.def("fwd_kvcache_mla", &mha_fwd_kvcache_mla);
+// }
+
+
+/******************************************************************************
+ * Copyright (c) 2024, Jay Shah, Ganesh Bikshandi, Ying Zhang, Vijay Thakkar, Pradeep Ramani, Tri Dao.
+ ******************************************************************************/
+
+// Include these 2 headers instead of torch/extension.h since we don't need all of the torch headers.
+#include <torch/python.h>
+#include <torch/nn/functional.h>
+#include <torch/version.h>  // For TORCH_VERSION* macros
+#include <ATen/cuda/CUDAContext.h>
+#include <c10/cuda/CUDAGuard.h>
+
+#include <cutlass/numeric_types.h>
+
+
+// Copied from https://github.com/pytorch/pytorch/commit/7931eee5c5ebcdf468bff4d308510b03355cd909
+// This is so that we can pass in torch.dtype as a parameter to the function.
+#if TORCH_VERSION_MAJOR < 2 || (TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR < 4)
+
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace pybind11::detail {
+
+    template <>
+    struct type_caster<at::ScalarType> {
+    public:
+        // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
+        PYBIND11_TYPE_CASTER(at::ScalarType, _("torch.dtype"));
+        // PYBIND11_TYPE_CASTER defines a member field called value. at::ScalarType
+        // cannot be default-initialized, we provide this constructor to explicitly
+        // initialize that field. The value doesn't matter as it will be overwritten
+        // after a successful call to load.
+        type_caster() : value(at::kFloat) {}
+        bool load(handle src, bool) {
+            PyObject* obj = src.ptr();
+            if (THPDtype_Check(obj)) {
+                value = reinterpret_cast<THPDtype*>(obj)->scalar_type;
+                return true;
+            }
+            return false;
+        }
+        static handle cast(
+                           const at::ScalarType& src,
+                           return_value_policy /* policy */,
+                           handle /* parent */) {
+            return Py_NewRef(torch::getTHPDtype(src));
+        }
+    };
+
+} // namespace pybind11::detail
+
+#endif
+
+
+// PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
+//     m.doc() = "flash_mla_cuda";
+//     m.def("get_mla_metadata", &get_mla_metadata, "get_mla_metadata");
+//     m.def("fwd_kvcache_mla", &mha_fwd_kvcache_mla, "fwd_kvcache_mla");
+// }
+
+
+
+PYBIND11_MODULE(flash_mla_old_cuda, m) {
+    m.def("get_mla_metadata", &get_mla_metadata);
+    m.def("fwd_kvcache_mla", &mha_fwd_kvcache_mla);
 }

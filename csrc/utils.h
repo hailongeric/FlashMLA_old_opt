@@ -224,11 +224,11 @@ __forceinline__ __device__ void copy(TiledCopy tiled_copy, Tensor<Engine0, Layou
                 if (Is_even_K || predicate_K(k)) {
                     cute::copy(tiled_copy, S(_, m, k), D(_, m, k));
                 } else if (Clear_OOB_K) {
-                    cute::clear(D(_, m, k));
+                    cute::clear(D(_, m, k)); // //! core key: clear(zero) the whole row when out of bound
                 }
             }
         } else if (Clear_OOB_MN) {
-            cute::clear(D(_, m, _));
+            cute::clear(D(_, m, _));  //! core key: clear(zero) the whole row when out of bound
         }
     }
 }
@@ -236,3 +236,22 @@ __forceinline__ __device__ void copy(TiledCopy tiled_copy, Tensor<Engine0, Layou
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }  // namespace flash
+
+#define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+    #define DEBUG_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
+    #define T0_DEBUG_PRINT(fmt, ...) \
+        if (threadIdx.x == 0) { \
+            printf("[Block (%d, %d)] " fmt, blockIdx.x, blockIdx.z, ##__VA_ARGS__); \
+        }
+    #define G0_DEBUG_PRINT(fmt, ...) \
+        if (thread0()) { \
+            printf(fmt, ##__VA_ARGS__); \
+        }
+#else
+    // In release mode, the macro does nothing.
+    #define DEBUG_PRINT(fmt, ...)
+    #define T0_DEBUG_PRINT(fmt, ...)
+    #define G0_DEBUG_PRINT(fmt, ...)
+#endif

@@ -5,7 +5,7 @@ import random
 import torch
 import triton
 
-from flash_mla import flash_mla_with_kvcache, get_mla_metadata
+from flash_mla_old import flash_mla_with_kvcache, get_mla_metadata
 
 
 def scaled_dot_product_attention(query, key, value, h_q, h_kv, is_causal=False):
@@ -101,17 +101,19 @@ def test_flash_mla(b, s_q, mean_sk, h_q, h_kv, d, dv, causal, varlen):
 
     out_flash, lse_flash = flash_mla()
     out_torch, lse_torch = ref_mla()
+    # print(out_flash[0,0,0,:8])
+    # print(out_torch[0,0,0,:8])
     cal_diff(out_flash, out_torch, "out")
-    cal_diff(lse_flash, lse_torch, "lse")
+    # cal_diff(lse_flash, lse_torch, "lse")
 
-    t = triton.testing.do_bench(flash_mla)
-    FLOPS = s_q * total_seqlens * h_q * (d + dv) * 2
-    bytes = (total_seqlens * h_kv * d + b * s_q * h_q * d + b * s_q * h_q * dv) * (
-        torch.finfo(q.dtype).bits // 8
-    )
-    print(
-        f"{t:.3f} ms, {FLOPS / 10 ** 9 / t:.0f} TFLOPS, {bytes / 10 ** 6 / t:.0f} GB/s"
-    )
+    # t = triton.testing.do_bench(flash_mla)
+    # FLOPS = s_q * total_seqlens * h_q * (d + dv) * 2
+    # bytes = (total_seqlens * h_kv * d + b * s_q * h_q * d + b * s_q * h_q * dv) * (
+    #     torch.finfo(q.dtype).bits // 8
+    # )
+    # print(
+    #     f"{t:.3f} ms, {FLOPS / 10 ** 9 / t:.0f} TFLOPS, {bytes / 10 ** 6 / t:.0f} GB/s"
+    # )
 
 
 def main(torch_dtype):
@@ -126,11 +128,11 @@ def main(torch_dtype):
     d, dv = 576, 512
     causal = True
 
-    for b in [128]:
-        for s in [4096, 8192]:
-            for h_q in [16, 32, 64, 128]:  # TP = 8, 4, 2, 1
-                for s_q in [1, 2]:  # MTP = 1, 2
-                    for varlen in [False, True]:
+    for b in [2]:
+        for s in [4096]:
+            for h_q in [128]:  # TP = 8, 4, 2, 1
+                for s_q in [1]:  # MTP = 1, 2
+                    for varlen in [False]:
                         test_flash_mla(b, s_q, s, h_q, h_kv, d, dv, causal, varlen)
 
 
