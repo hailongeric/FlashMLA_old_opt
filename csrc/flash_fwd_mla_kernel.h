@@ -164,17 +164,17 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     T0_DEBUG_PRINT("split_offset %d,bidb %d  m_block %d n_split_idx %d kNThreadsS %d\n",split_offset, bidb, m_block, n_split_idx, kNThreadsS);
 
     Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, Split>(tOrO, params.scale_softmax);
-    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
-        print(lse);
-        printf(" size %d\n",decltype(size(lse))::value);
-    }
+    // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
+    //     print(lse);
+    //     printf(" size %d\n",decltype(size(lse))::value);
+    // }
 
     using ElementO = std::conditional_t<!Split, Element, ElementAccum>;
     Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementO *>(shared_storage.smem_o.data())), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)  (64, 512)
-    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
-        print(sOaccum);
-        printf("sOaccum size %d\n",decltype(size(sOaccum))::value);
-    }
+    // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
+    //     print(sOaccum);
+    //     printf("sOaccum size %d\n",decltype(size(sOaccum))::value);
+    // }
     // Partition sO to match the accumulator partitioning
     using SmemTiledCopyO = std::conditional_t<
             !Split,
@@ -187,12 +187,12 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     Tensor taccOrOaccum = smem_thr_copy_Oaccum.retile_S(rO);        // ((Atom,AtomNum), MMA_M, MMA_N)
     Tensor taccOsOaccum = smem_thr_copy_Oaccum.partition_D(sOaccum);     // ((Atom,AtomNum),PIPE_M,PIPE_N)
 
-    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
-        // print(taccOrOaccum);
-        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
-        print(taccOsOaccum);
-        printf("taccOsOaccum size %d\n",decltype(size(taccOsOaccum))::value);
-    }
+    // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+    //     // print(taccOrOaccum);
+    //     // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+    //     print(taccOsOaccum);
+    //     printf("taccOsOaccum size %d\n",decltype(size(taccOsOaccum))::value);
+    // }
 
     __syncthreads();
 
@@ -230,44 +230,44 @@ __forceinline__ __device__ void store(const Flash_fwd_mla_params &params, const 
     Tensor taccOcO = thr_mma_o.partition_C(caccO);                           // ((MMA=4, X), MMA_M, MMA_K=1)
     Tensor taccOcO_row = taccOcO(make_coord(0, _, 0), _, 0);
     CUTE_STATIC_ASSERT_V(size(lse) == size(taccOcO_row));                     // MMA_M
-    if(blockIdx.z == 0 && blockIdx.x == 0 ){
-        printf("threadIdx.x %d get<1>(taccOcO_row(0)) %d, get<0>(taccOcO_row(0)) %d\n",threadIdx.x, get<1>(taccOcO_row(0)), get<0>(taccOcO_row(0)));
-    }
+    // if(blockIdx.z == 0 && blockIdx.x == 0 ){
+    //     printf("threadIdx.x %d get<1>(taccOcO_row(0)) %d, get<0>(taccOcO_row(0)) %d\n",threadIdx.x, get<1>(taccOcO_row(0)), get<0>(taccOcO_row(0)));
+    // }
     if (get<1>(taccOcO_row(0)) == 0) {
 #pragma unroll
         for (int mi = 0; mi < size(lse); ++mi) {
             const int row = get<0>(taccOcO_row(mi));
-            if(blockIdx.z == 0 && blockIdx.x == 0 ){
-                printf("threadIdx.x %d row %d, mi %d\n",threadIdx.x, row, mi);
-            }
+            // if(blockIdx.z == 0 && blockIdx.x == 0 ){
+            //     printf("threadIdx.x %d row %d, mi %d\n",threadIdx.x, row, mi);
+            // }
             if (row < params.seqlen_q - m_block * kBlockM) { gLSEaccum(row) = lse(mi); }  //! todo 
         }
     }
     
-    if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
-        // print(taccOrOaccum);
-        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
-        print(lse);
-        printf("lse size %d\n",decltype(size(lse))::value);  // !
-        // print(taccOcO);
-        // printf("taccOcO size %d\n",decltype(size(taccOcO))::value);  // !  ArithTuple(0,0) o ((_2,_2,_32),_1,_1):((_1@1,_8@0,_8@1),_0,_0)taccOcO size 128
+    // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+    //     // print(taccOrOaccum);
+    //     // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+    //     print(lse);
+    //     printf("lse size %d\n",decltype(size(lse))::value);  // !
+    //     // print(taccOcO);
+    //     // printf("taccOcO size %d\n",decltype(size(taccOcO))::value);  // !  ArithTuple(0,0) o ((_2,_2,_32),_1,_1):((_1@1,_8@0,_8@1),_0,_0)taccOcO size 128
 
-    }
+    // }
 
     // Construct identity layout for sO
     Tensor cO = make_identity_tensor(make_shape(size<0>(sOaccum), size<1>(sOaccum)));    // (BLK_M,BLK_K) -> (blk_m,blk_k)
     // Repeat the partitioning with identity layouts
     Tensor tOcO = gmem_thr_copy_Oaccum.partition_D(cO);                           // (ACPY,ACPY_M,ACPY_K) -> (blk_m,blk_k)
     Tensor tOpO = make_tensor<bool>(make_shape(size<2>(tOgOaccum)));
-     if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
-        // print(taccOrOaccum);
-        // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
-        print(tOrOaccum); //! ((_1,_4),_8,_8):((_0,_1),_4,_32)  si ze is 256
-        printf("tOrOaccum size %d\n",decltype(size(tOrOaccum))::value);  // !
-        print(tOgOaccum);  //!  ((_1,_4),_8,_8):((_0,_1),4096,_64)
-        printf("tOgOaccum size %d\n",decltype(size(tOgOaccum))::value); 
+    //  if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){  //! why add some print, and compute result is error?
+    //     // print(taccOrOaccum);
+    //     // printf("taccOrOaccum size %d\n",decltype(size(taccOrOaccum))::value);  // ! can't print register tensor, otherwise the result of output O is None
+    //     print(tOrOaccum); //! ((_1,_4),_8,_8):((_0,_1),_4,_32)  si ze is 256
+    //     printf("tOrOaccum size %d\n",decltype(size(tOrOaccum))::value);  // !
+    //     print(tOgOaccum);  //!  ((_1,_4),_8,_8):((_0,_1),4096,_64)
+    //     printf("tOgOaccum size %d\n",decltype(size(tOgOaccum))::value); 
 
-    }
+    // }
     // Clear_OOB_K must be false since we don't want to write zeros to gmem
     flash::copy</*Is_even_MN=*/false, /*Is_even_K=*/true, /*Clear_OOB_MN=*/false, /*Clear_OOB_K=*/false>(
             gmem_tiled_copy_Oaccum, tOrOaccum, tOgOaccum, tOcO, tOpO, params.seqlen_q - m_block * kBlockM

@@ -237,7 +237,7 @@ __forceinline__ __device__ void copy(TiledCopy tiled_copy, Tensor<Engine0, Layou
 
 }  // namespace flash
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 #ifdef DEBUG_MODE
     #define DEBUG_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
