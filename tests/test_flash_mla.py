@@ -53,12 +53,20 @@ def test_flash_mla(b, s_q, mean_sk, h_q, h_kv, d, dv, causal, varlen):
     max_seqlen_pad = triton.cdiv(max_seqlen, 256) * 256
     # print(f"{total_seqlens=}, {mean_seqlens=}, {max_seqlen=}")
 
-    q = torch.randn(b, s_q, h_q, d)
+    q = torch.randn(b, s_q, h_q, d)  ##!
+    # q = torch.ones(b, s_q, h_q, d)
+    # q = (torch.arange(h_q, dtype=torch.bfloat16) * 0.1).to(torch.bfloat16).view(1, 1, h_q, 1).repeat(b, s_q, 1, d).contiguous()
+    # print(q.dtype, q.shape, q.device)
+    # print(q[0, 0, 0, 0:16])
+    
     block_size = 64
     block_table = torch.arange(
         b * max_seqlen_pad // block_size, dtype=torch.int32
     ).view(b, max_seqlen_pad // block_size)
-    blocked_k = torch.randn(block_table.numel(), block_size, h_kv, d)
+    blocked_k = torch.randn(block_table.numel(), block_size, h_kv, d) ## !
+    # blocked_k = torch.ones(block_table.numel(), block_size, h_kv, d)
+    # blocked_k = (torch.arange(block_size, dtype=torch.bfloat16) * 0.2).view(1, block_size, 1, 1).repeat(block_table.numel(), 1, h_kv, d).contiguous()
+
     for i in range(b):
         blocked_k.view(b, max_seqlen_pad, h_kv, d)[i, cache_seqlens[i].item():] = (
             float("nan")
@@ -101,10 +109,11 @@ def test_flash_mla(b, s_q, mean_sk, h_q, h_kv, d, dv, causal, varlen):
 
     out_flash, lse_flash = flash_mla()
     out_torch, lse_torch = ref_mla()
-    # print(out_flash[0,0,0,:8])
-    # print(out_torch[0,0,0,:8])
+    print(out_flash.shape)
+    # print(out_flash[0,0,1,448:512])
+    # print(out_torch[0,0,1,448:512])
     cal_diff(out_flash, out_torch, "out")
-    # cal_diff(lse_flash, lse_torch, "lse")
+    cal_diff(lse_flash, lse_torch, "lse")
 
     # t = triton.testing.do_bench(flash_mla)
     # FLOPS = s_q * total_seqlens * h_q * (d + dv) * 2
@@ -128,8 +137,8 @@ def main(torch_dtype):
     d, dv = 576, 512
     causal = True
 
-    for b in [2]:
-        for s in [4096]:
+    for b in [1]:
+        for s in [4096, 8192, 16384, 32768]:  # , 8192, 16384
             for h_q in [128]:  # TP = 8, 4, 2, 1
                 for s_q in [1]:  # MTP = 1, 2
                     for varlen in [False]:
