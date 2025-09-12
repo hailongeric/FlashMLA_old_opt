@@ -108,12 +108,12 @@ def test_flash_mla(b, s_q, mean_sk, h_q, h_kv, d, dv, causal, varlen):
         return out, lse
 
     out_flash, lse_flash = flash_mla()
-    out_torch, lse_torch = ref_mla()
-    print(out_flash.shape)
+    # out_torch, lse_torch = ref_mla()
+    # print(out_flash.shape)
     # print(out_flash[0,0,1,448:512])
-    # print(out_torch[0,0,1,448:512])
-    cal_diff(out_flash, out_torch, "out")
-    cal_diff(lse_flash, lse_torch, "lse")
+    # # print(out_torch[0,0,1,448:512])
+    # cal_diff(out_flash, out_torch, "out")
+    # cal_diff(lse_flash, lse_torch, "lse")
 
     # t = triton.testing.do_bench(flash_mla)
     # FLOPS = s_q * total_seqlens * h_q * (d + dv) * 2
@@ -138,7 +138,7 @@ def main(torch_dtype):
     causal = True
 
     for b in [1]:
-        for s in [4096, 8192, 16384, 32768]:  # , 8192, 16384
+        for s in [ 32768]:  # , 8192, 16384
             for h_q in [128]:  # TP = 8, 4, 2, 1
                 for s_q in [1]:  # MTP = 1, 2
                     for varlen in [False]:

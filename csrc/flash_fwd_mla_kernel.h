@@ -508,6 +508,7 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
             //     printf(" size %d\n",decltype(size(lse))::value);
             // }
 
+            
             // Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementAccum *>(shared_storage.smem_o.data())), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)  (64, 512)  //! 
             Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementAccum *>(shared_storage.smem_sK0.data())), Layout<Shape<_64, _512>, Stride<Int<512>,_1>>{}); // (SMEM_M,SMEM_N)  (64, 512)
 

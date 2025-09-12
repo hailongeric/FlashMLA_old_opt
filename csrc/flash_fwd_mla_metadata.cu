@@ -43,8 +43,8 @@ get_mla_metadata_kernel(__grid_constant__ const Mla_metadata_params params) {
 
 
         // printf("total_num_blocks: %d num_sm_parts %d\n", total_num_blocks, num_sm_parts);
-        int payload = max(cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks,fixed_overhead_num_blocks*2);
-        // int payload = cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks;  //!
+        // int payload = max(cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks,fixed_overhead_num_blocks*2);
+        int payload = cutlass::ceil_div(total_num_blocks, num_sm_parts) + fixed_overhead_num_blocks;  //!
 
         //! todo debug info 
         // int avg_splits = (total_num_blocks / batch_size) / (total_num_blocks/ num_sm_parts);
