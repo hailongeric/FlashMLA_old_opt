@@ -20,6 +20,8 @@ with Blackwell; see [NVIDIA's compatibility guide](https://docs.nvidia.com/cuda/
 - [Operation and usage workflow](docs/WORKFLOW.md): environment checks, inference,
   correctness tests, paired benchmarking and troubleshooting.
 - [Documentation index](docs/README.md) and [code map](docs/CODE_MAP.md).
+- [Current DeepInfer applicability](docs/DEEPINFER_APPLICABILITY.md): pinned
+  upstream audit, eligible combine paths and the SM100 validation requirement.
 - [agents.md](agents.md): shared-server environment, limitations and preservation rules.
 
 ## Run on this shared server

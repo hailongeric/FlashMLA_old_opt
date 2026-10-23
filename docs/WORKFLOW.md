@@ -180,6 +180,27 @@ validation require an appropriate Hopper environment and hardware; see the
 [H100 continuation notes](TMA_REDUCTION.md). An RTX run or mocked dispatcher
 test cannot validate H100 kernel correctness or performance.
 
+## 7. Investigate current upstream without changing the working environment
+
+Start with [the DeepInfer applicability report](DEEPINFER_APPLICABILITY.md)
+and its [source manifest](DEEPINFER_SOURCE_AUDIT.json). Record the framework
+commit, its `vendor/FlashMLA` gitlink and independent FlashMLA main separately.
+Trace the selected model-layer route before changing a combine kernel: fused
+decode has no split-KV combine, and non-fused decode gates it on index capacity
+and batch-invariance mode. Record actual split counts as well as the gate.
+
+Source-only inspection needs no GPU run or package install. Do not run
+DeepInfer's dependency installer in shared nhlpy3: the audited requirements
+target a different Torch/CUDA stack and the build script reinstalls NCCL.
+Current NVIDIA kernels require SM100-family hardware, unavailable on this
+RTX-only server. H100 validation and current DeepInfer validation are separate
+tracks. Keep source snapshots and any future audit artifacts under
+`~/nhl_project`; preserve both working backends and existing evidence.
+
+After documentation changes, validate links, fenced example syntax, JSON
+provenance and `git diff --check`. Runtime experiments remain subject to the
+existing hardware/environment and correctness rules.
+
 ## Common problems
 
 | Symptom | Check or action |

@@ -1,5 +1,12 @@
 # Split KV reduction design and continuation notes
 
+Scope update, 24 October 2026: this document describes the preserved historical
+Hopper implementation. The [current DeepInfer applicability audit](DEEPINFER_APPLICABILITY.md)
+finds a conditional integration point in non-fused split-KV decode, while the
+fused path has no standalone combine. Current DeepInfer targets SM100-family
+kernels with different cache and output contracts. This source record is not
+a claim of compatibility or measured speedup in that framework.
+
 > These notes describe the preserved H100 implementation. The separate RTX 6000D backend and its GPU validation are documented in [RTX6000D.md](RTX6000D.md).
 
 ## Scope and provenance

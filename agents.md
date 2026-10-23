@@ -79,6 +79,27 @@ documentation format.
   dispatch do not prove H100 runtime correctness or performance. Keep the
   unresolved H100 synchronization questions visible in `docs/TMA_REDUCTION.md`.
 
+## Current upstream investigation
+
+- Consult [the DeepInfer audit](docs/DEEPINFER_APPLICABILITY.md) before assuming
+  that this historical dense-MLA API matches current DeepSeek inference.
+  Record framework HEAD, its FlashMLA gitlink and separate library HEAD; pin
+  source links and hashes. Recheck dispatch when those revisions change.
+- Only RTX 6000D is available. Current DeepInfer NVIDIA kernels target SM100
+  and the audited FlashMLA APIs require SM100-family hardware. Neither RTX
+  results nor future H100 results validate that upstream implementation.
+- Do not execute upstream dependency/build installers as part of a source
+  audit. The audited DeepInfer installer changes Torch/CUDA dependencies and
+  reinstalls NCCL, which would affect shared nhlpy3. Continue source/model
+  analysis using the existing environment without package changes.
+- Distinguish non-fused split-KV from fused no-split decode. Any future port
+  must preserve quantized-cache, attention-sink, ragged-split, empty-row and
+  CUDA Graph contracts. Current upstream uses a different empty-LSE sentinel
+  from the RTX backend; do not silently replace either backend's semantics.
+- A source-level integration opportunity is not a runtime result. Keep
+  upstream experiments, historical Hopper work and measured RTX evidence
+  explicitly labeled in documentation.
+
 ## Development and validation
 
 1. Inspect `git status`, existing instructions and affected callers before any

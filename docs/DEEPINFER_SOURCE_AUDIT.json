@@ -1,0 +1,530 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-24",
+  "timezone": "Asia/Shanghai",
+  "retrieved_utc": "2026-10-23T16:52:32.444758+00:00",
+  "scope": "Official NVIDIA decode path, source inspection only",
+  "project_base_commit": "5dcdbba15d62d6d96c15ffa393dd522cabdb39da",
+  "upstream_snapshots": {
+    "DeepInfer": {
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "commit_date": "2026-10-21T04:55:43Z",
+      "repository": "https://github.com/deepseek-ai/DeepInfer",
+      "subject": "Bump DeepEP to f6aa38fe and drop the SSH->HTTPS rewrite (#157)"
+    },
+    "FlashMLA": {
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "commit_date": "2026-10-15T13:47:29Z",
+      "repository": "https://github.com/deepseek-ai/FlashMLA",
+      "subject": "Make FlashMLA CPython and LibTorch ABI stable (#230)"
+    },
+    "FlashMLA_pinned": {
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "commit_date": "2026-09-30T01:58:27Z",
+      "repository": "https://github.com/deepseek-ai/FlashMLA",
+      "subject": "Open-source release for Ascend 950 (2026.09.30) (#229)"
+    }
+  },
+  "framework_flashmla_gitlink": {
+    "path": "vendor/FlashMLA",
+    "sha": "2e5429fc5653bab6e081f09477126f731882a6a9"
+  },
+  "source_files": [
+    {
+      "snapshot": "DeepInfer",
+      "path": "README.md",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "b55624158ada4dc21b882d24ded06bf82f65350b44d170877b68395712cd670d",
+      "git_blob_sha1": "7143caadd1258f56295e2c7766889478556836b3",
+      "bytes": 4660,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/README.md"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": ".gitmodules",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "abaec302b842bd11753e114cc02af43925c7216f9673983090b879e46b9fc157",
+      "git_blob_sha1": "7681328b6793c4746fdeb58f3cd321524524f417",
+      "bytes": 666,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/.gitmodules"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "build.sh",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "840283a6559bf99f38dbb153f168ddd3157a11669f9f10a38d90809a12175c7d",
+      "git_blob_sha1": "1122f5cbe53d4584f1d6f9650ca6ae9894069846",
+      "bytes": 606,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/build.sh"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "requirements-nvidia.txt",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "f76510c5b75dc9633669596d03534a537b9f14241718b8fc93fdff9e4b795162",
+      "git_blob_sha1": "e7769aa330dded358772dd5d28a1988cb2d7865b",
+      "bytes": 127,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/requirements-nvidia.txt"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "requirements.txt",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "6b7eb923377c7fa34ea950d5f8fb8c917a240b325494e13a83b3852d7d479db9",
+      "git_blob_sha1": "6a01f00efc9268d3a08208cfbc98ead74aa75ca1",
+      "bytes": 342,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/requirements.txt"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/layers/attention_backend.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "0ad1c371863524dacf199e2e8be25b02033221c3c85c9922d39d9696c6a247d3",
+      "git_blob_sha1": "84f25a42fa123de9a3e6b7b6951fc2224b85ae41",
+      "bytes": 6171,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/layers/attention_backend.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/models/v4_modules/mla_attn.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "7cf38a5bfa3800577c177a83e4cfecc1d0cf2b48b5bbadcfa1039b71ae882789",
+      "git_blob_sha1": "90b66bb14d8aa8952300e5bbd1c8d3305675c55d",
+      "bytes": 11335,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/models/v4_modules/mla_attn.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/models/v4_modules/attn.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "cb228c8fd4c76200e2ec266c51872107cfe7b384fdc88458b3d1c0ff101f3116",
+      "git_blob_sha1": "cbf375da5ce3ed88ba229ac4232fe989e48edba2",
+      "bytes": 46250,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/models/v4_modules/attn.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/layers/tilelang_ops/cuda/prepare_decode_metadata.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "33ee5730fab7ed13957f8bf8c3cf27c20b01bede9ad2b53fe98a8c68c6a2362e",
+      "git_blob_sha1": "b047abf5e7d3f718777755dec7ec2aa7f943778a",
+      "bytes": 9071,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/layers/tilelang_ops/cuda/prepare_decode_metadata.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/layers/tilelang_ops/cuda/flash_mla_utils.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "5a365195b848668126ebd73dfed00e3645648b1e509c39549c4da4fbe7c5f9b5",
+      "git_blob_sha1": "1ad2f20c59adce08ef1a95bd3e8803515c29a0d1",
+      "bytes": 1256,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/layers/tilelang_ops/cuda/flash_mla_utils.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/layers/tilelang_ops/flash_mla_utils.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "83b2d1c4eba06271e02f9002a4d90f5d183c7cb3e55792624f629c36e75067a7",
+      "git_blob_sha1": "8277b86e7c2633c265ef5c9aad3ff28ee6f4c489",
+      "bytes": 3862,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/layers/tilelang_ops/flash_mla_utils.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/worker/cuda_graph_runner.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "9f559e88d60d057d23243852616aa9cd7264a59841d580731bec1f8cb8bd57b0",
+      "git_blob_sha1": "bf3a67ca90b509d35147924ddb31f7de3188e51e",
+      "bytes": 7207,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/worker/cuda_graph_runner.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/environ.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "fe2c531989c419f0b51b169a07f5ed826dcec7f95c0c5bc3a351805923c4f218",
+      "git_blob_sha1": "332064a06c80cf290e28e791eb0c09d69bdd1b16",
+      "bytes": 8738,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/environ.py"
+    },
+    {
+      "snapshot": "DeepInfer",
+      "path": "deepinfer/model_executor/models/v4_modules/builder.py",
+      "commit": "9bd9cf243fc53ef9afbf8f04d391d989117d6ab9",
+      "sha256": "2aa85c2d03b1caebf1def294f1a066ab57e5190a9954983e1f79edee22450ce0",
+      "git_blob_sha1": "6c1990bffc33aaf019229ebd9f4c02370689fbc4",
+      "bytes": 6576,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/9bd9cf243fc53ef9afbf8f04d391d989117d6ab9/deepinfer/model_executor/models/v4_modules/builder.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "README.md",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "9e53e4acce786afdcd275d7c025336656828bd80e8a939f9886dc591ef2ea610",
+      "git_blob_sha1": "ddedb07916ef22da07d99b2c996a123fd120b8c8",
+      "bytes": 22149,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/README.md"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "setup.py",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "d0b3c97713bb14db9b029a381c52344164e7a01bc4e0f23bd60902af51de969e",
+      "git_blob_sha1": "06e8bae28555da368acdee8b46c6217924809ac4",
+      "bytes": 14250,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/setup.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "flash_mla/flash_mla_interface.py",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "98c81568cdcbd6d16fb32cbbd1656f93eeff3d9c0d944df9335a730993fa6448",
+      "git_blob_sha1": "a68a31a924cce78ff159dc4468fd410c5026bdbb",
+      "bytes": 27194,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/flash_mla/flash_mla_interface.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "flash_mla/fused_norm_rope_attn_rope_cast.py",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "45f894da2527e5f114bdf2533c3a392e251c2a09aa1f0f404699548fd3bc3625",
+      "git_blob_sha1": "197a447b9f412cb238759ec826d61aa14ce9eea2",
+      "bytes": 9716,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/flash_mla/fused_norm_rope_attn_rope_cast.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/api/sparse_decode.cpp",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "95e80b055de6da3471f27f49296368c8c17392e90bc745d188c5af31e21a6bb6",
+      "git_blob_sha1": "220fba4680250248953a9c07dfb27abef359a02b",
+      "bytes": 18631,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/api/sparse_decode.cpp"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/api/fused_norm_rope_attn_rope_cast_fwd.cpp",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "0103ce28d411df8824d550c9f86676309001b76a18e56e929ad5d230a7f9be99",
+      "git_blob_sha1": "9b52b7a9528c0dd21d7737271b5b14f19948346d",
+      "bytes": 25206,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/api/fused_norm_rope_attn_rope_cast_fwd.cpp"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/smxx/decode/combine/combine.cu",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "26588ddb482bcd3636088b2615b17ed1b1d4838766f495a1f7abedcbb12866af",
+      "git_blob_sha1": "e112b4d2704455c025756e861b9520a8debe9c69",
+      "bytes": 10554,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/smxx/decode/combine/combine.cu"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/smxx/decode/combine/combine.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "2989cf879d3ccb22585869a3a1927657a08e29cae993bb9bb6d40d0261ca6a24",
+      "git_blob_sha1": "eab46b843b5c470cd4eb21b9134f5be9108ae6b5",
+      "bytes": 171,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/smxx/decode/combine/combine.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/smxx/decode/get_decoding_sched_meta/get_decoding_sched_meta.cu",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "3f1486182d65781dd351d24e402285f961055dd0674f5ada37dd23d5a0cd9287",
+      "git_blob_sha1": "2307c47f3dbd731510eae2ada4f9a502e67eb420",
+      "bytes": 6990,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/smxx/decode/get_decoding_sched_meta/get_decoding_sched_meta.cu"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.cuh",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "26af7d06f4b16c54b36452c0456dd557bb3b0ee48a8b89930dd446e5864bf137",
+      "git_blob_sha1": "8e184aeec08aac98da3ecbf295b01682182f8de3",
+      "bytes": 37759,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.cuh"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "ca15c04f7faced779d89408bde272a99573cb5b50f8847c6a01749a97e1429c3",
+      "git_blob_sha1": "eeb7f27ebaf1e621ed9887b65f6b3a56756a221a",
+      "bytes": 383,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/config.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "cfe2ed62bfcaeb2d49bb46804fb787e9d1ad89abf550966d880aa1f53f267f6c",
+      "git_blob_sha1": "2fee58826d893e997a7731324315e3c261152601",
+      "bytes": 7607,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/decode/sparse/head64/config.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.cuh",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "1b4507fe7d2edeb50e90145c368f2ea2c93da9522b1834d2691bdb7dc993f3c5",
+      "git_blob_sha1": "1d13fa5eff12671aee86ce23b002db8e4ccdddf1",
+      "bytes": 103911,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.cuh"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "bf25cbd49a4a7099ae36470d80f24e0fa5758482f13c39418f0bdec00ce3fdab",
+      "git_blob_sha1": "8e7f7158781793d61c0ca28d7da5899c0634f03b",
+      "bytes": 2051,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/config.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "40e46d177bf3aa9f3fd0b6669721d811b28b05d4cd1ac3d0218e4b34f91f9323",
+      "git_blob_sha1": "233d333740fec5e2a30a03dfd7a68cfedb0d6e2e",
+      "bytes": 21232,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/config.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "tests/test-sparse-decode.py",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "ebcb2dfad0d6e1450f2e74d264cf31293c9541049a9366695e2e5d2ab980b452",
+      "git_blob_sha1": "0a6565870ed0a783fbd4f3c45eac595b5f78ae15",
+      "bytes": 16229,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/tests/test-sparse-decode.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "tests/test-fused-norm-rope-attn-rope-cast.py",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "57817d1613a673b327b9c4f69133f39b08cdcfe93c6d11283a847d49c5281e58",
+      "git_blob_sha1": "2957639806a6c38bfd44c14d1cfb0fe0a10bdd86",
+      "bytes": 25451,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/tests/test-fused-norm-rope-attn-rope-cast.py"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/config.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "a595e445440e76ccbcd7a33f069fd7ee8544bc7c6a754409065a96893ca6971d",
+      "git_blob_sha1": "d253159db685b722ddf7be3855203ea2ca75e611",
+      "bytes": 6545,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/config.h"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.cuh",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "1a3005599cde2e3dbb8df6856934b12534793497f31594a26acadec8c3b66f7b",
+      "git_blob_sha1": "fe49e252fe943cd2891b79548a3ceaba2621ffaf",
+      "bytes": 54466,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.cuh"
+    },
+    {
+      "snapshot": "FlashMLA_pinned",
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.h",
+      "commit": "2e5429fc5653bab6e081f09477126f731882a6a9",
+      "sha256": "78a91114d6fabfa7ea2490c04ef2560671554b7e14209f1942cdef9c97c6f577",
+      "git_blob_sha1": "9988d5f64fc2f76e4ef50e955b1f616904ac7c81",
+      "bytes": 342,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/2e5429fc5653bab6e081f09477126f731882a6a9/csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.h"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "README.md",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "0a3d443119284195fd8ef144bd0325fd7d58e08070764f824a1adb6ad3333eb8",
+      "git_blob_sha1": "f5d1edb82be943a1380d15a027d1e7004f0ec699",
+      "bytes": 22629,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/README.md"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "setup.py",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "7019e172508cf5af38cb614746765b316f778d3fc8ab0dcdf1828d89769a4c3e",
+      "git_blob_sha1": "edfd33ecec168bb726bf0bb5363fbd797ae214fc",
+      "bytes": 16711,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/setup.py"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "flash_mla/flash_mla_interface.py",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "b76fd87b52f779d779ff87ec4ead156ee54503c5e167043030f526680e682e4d",
+      "git_blob_sha1": "3457a4f39c81e66c78983bef022eb2c7ecd6e138",
+      "bytes": 27248,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/flash_mla/flash_mla_interface.py"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "flash_mla/fused_norm_rope_attn_rope_cast.py",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "408169d80a7832355bb9b0b917a862458959941ed279ca1145e7d51655508b58",
+      "git_blob_sha1": "3dee396524ba897250d8109ab7005b05c93d9818",
+      "bytes": 9603,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/flash_mla/fused_norm_rope_attn_rope_cast.py"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "csrc/api/sparse_decode.cpp",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "be51f7319a5e0f01787282a4eef12671afbeb22dcb0b70ef07294150ce35f445",
+      "git_blob_sha1": "8580c07f9d887172183d6efc2ab0032d77a0d14b",
+      "bytes": 18585,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/csrc/api/sparse_decode.cpp"
+    },
+    {
+      "snapshot": "FlashMLA",
+      "path": "csrc/api/fused_norm_rope_attn_rope_cast_fwd.cpp",
+      "commit": "0f11e178da1f67becb087a324b400854931ec3e3",
+      "sha256": "2df2df5ac3070716d6a90892573709edeb8d881371039ea08a510d1e2e911388",
+      "git_blob_sha1": "6c8d38275bb9c270eba53f2b3efb4b9a1e6df793",
+      "bytes": 25572,
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/FlashMLA/0f11e178da1f67becb087a324b400854931ec3e3/csrc/api/fused_norm_rope_attn_rope_cast_fwd.cpp"
+    }
+  ],
+  "flashmla_pin_vs_main": [
+    {
+      "path": "README.md",
+      "pinned_git_blob_sha1": "ddedb07916ef22da07d99b2c996a123fd120b8c8",
+      "latest_git_blob_sha1": "f5d1edb82be943a1380d15a027d1e7004f0ec699",
+      "identical": false
+    },
+    {
+      "path": "setup.py",
+      "pinned_git_blob_sha1": "06e8bae28555da368acdee8b46c6217924809ac4",
+      "latest_git_blob_sha1": "edfd33ecec168bb726bf0bb5363fbd797ae214fc",
+      "identical": false
+    },
+    {
+      "path": "flash_mla/flash_mla_interface.py",
+      "pinned_git_blob_sha1": "a68a31a924cce78ff159dc4468fd410c5026bdbb",
+      "latest_git_blob_sha1": "3457a4f39c81e66c78983bef022eb2c7ecd6e138",
+      "identical": false
+    },
+    {
+      "path": "flash_mla/fused_norm_rope_attn_rope_cast.py",
+      "pinned_git_blob_sha1": "197a447b9f412cb238759ec826d61aa14ce9eea2",
+      "latest_git_blob_sha1": "3dee396524ba897250d8109ab7005b05c93d9818",
+      "identical": false
+    },
+    {
+      "path": "csrc/api/sparse_decode.cpp",
+      "pinned_git_blob_sha1": "220fba4680250248953a9c07dfb27abef359a02b",
+      "latest_git_blob_sha1": "8580c07f9d887172183d6efc2ab0032d77a0d14b",
+      "identical": false
+    },
+    {
+      "path": "csrc/api/fused_norm_rope_attn_rope_cast_fwd.cpp",
+      "pinned_git_blob_sha1": "9b52b7a9528c0dd21d7737271b5b14f19948346d",
+      "latest_git_blob_sha1": "6c8d38275bb9c270eba53f2b3efb4b9a1e6df793",
+      "identical": false
+    },
+    {
+      "path": "csrc/cuda_kernels/smxx/decode/combine/combine.cu",
+      "pinned_git_blob_sha1": "e112b4d2704455c025756e861b9520a8debe9c69",
+      "latest_git_blob_sha1": "e112b4d2704455c025756e861b9520a8debe9c69",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/smxx/decode/combine/combine.h",
+      "pinned_git_blob_sha1": "eab46b843b5c470cd4eb21b9134f5be9108ae6b5",
+      "latest_git_blob_sha1": "eab46b843b5c470cd4eb21b9134f5be9108ae6b5",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/smxx/decode/get_decoding_sched_meta/get_decoding_sched_meta.cu",
+      "pinned_git_blob_sha1": "2307c47f3dbd731510eae2ada4f9a502e67eb420",
+      "latest_git_blob_sha1": "2307c47f3dbd731510eae2ada4f9a502e67eb420",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.cuh",
+      "pinned_git_blob_sha1": "8e184aeec08aac98da3ecbf295b01682182f8de3",
+      "latest_git_blob_sha1": "8e184aeec08aac98da3ecbf295b01682182f8de3",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/kernel.h",
+      "pinned_git_blob_sha1": "eeb7f27ebaf1e621ed9887b65f6b3a56756a221a",
+      "latest_git_blob_sha1": "eeb7f27ebaf1e621ed9887b65f6b3a56756a221a",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/decode/sparse/head64/config.h",
+      "pinned_git_blob_sha1": "2fee58826d893e997a7731324315e3c261152601",
+      "latest_git_blob_sha1": "2fee58826d893e997a7731324315e3c261152601",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.cuh",
+      "pinned_git_blob_sha1": "1d13fa5eff12671aee86ce23b002db8e4ccdddf1",
+      "latest_git_blob_sha1": "1d13fa5eff12671aee86ce23b002db8e4ccdddf1",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/kernel.h",
+      "pinned_git_blob_sha1": "8e7f7158781793d61c0ca28d7da5899c0634f03b",
+      "latest_git_blob_sha1": "8e7f7158781793d61c0ca28d7da5899c0634f03b",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fused_norm_rope_attn_rope_cast_fwd/core_attn/config.h",
+      "pinned_git_blob_sha1": "233d333740fec5e2a30a03dfd7a68cfedb0d6e2e",
+      "latest_git_blob_sha1": "233d333740fec5e2a30a03dfd7a68cfedb0d6e2e",
+      "identical": true
+    },
+    {
+      "path": "tests/test-sparse-decode.py",
+      "pinned_git_blob_sha1": "0a6565870ed0a783fbd4f3c45eac595b5f78ae15",
+      "latest_git_blob_sha1": "0a6565870ed0a783fbd4f3c45eac595b5f78ae15",
+      "identical": true
+    },
+    {
+      "path": "tests/test-fused-norm-rope-attn-rope-cast.py",
+      "pinned_git_blob_sha1": "2957639806a6c38bfd44c14d1cfb0fe0a10bdd86",
+      "latest_git_blob_sha1": "2957639806a6c38bfd44c14d1cfb0fe0a10bdd86",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/config.h",
+      "pinned_git_blob_sha1": "d253159db685b722ddf7be3855203ea2ca75e611",
+      "latest_git_blob_sha1": "d253159db685b722ddf7be3855203ea2ca75e611",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.cuh",
+      "pinned_git_blob_sha1": "fe49e252fe943cd2891b79548a3ceaba2621ffaf",
+      "latest_git_blob_sha1": "fe49e252fe943cd2891b79548a3ceaba2621ffaf",
+      "identical": true
+    },
+    {
+      "path": "csrc/cuda_kernels/sm100/prefill/sparse/fwd_for_small_topk/head128/phase1.h",
+      "pinned_git_blob_sha1": "9988d5f64fc2f76e4ef50e955b1f616904ac7c81",
+      "latest_git_blob_sha1": "9988d5f64fc2f76e4ef50e955b1f616904ac7c81",
+      "identical": true
+    }
+  ],
+  "validation": {
+    "source_sha256_verified": true,
+    "git_blob_sha1_verified": true,
+    "upstream_code_executed": false,
+    "upstream_built": false,
+    "upstream_gpu_benchmarks": false,
+    "packages_installed": false
+  },
+  "limitations": [
+    "Main revisions are those observed at audit time, not promises about future upstream state.",
+    "Comparison covers the listed files, not equality of complete repository trees.",
+    "Only RTX 6000D SM120 hardware is available; SM100 and historical Hopper runtime validation are unavailable.",
+    "No production path frequency, DeepInfer speedup, energy or utilization claim is measured."
+  ]
+}

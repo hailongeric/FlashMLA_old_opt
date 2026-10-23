@@ -4,6 +4,21 @@ Audit date: 24 October 2026 (Asia/Shanghai). Only the RTX 6000D server is
 available. The H100 implementation is preserved, but no new Hopper execution,
 correctness, performance or energy result is claimed.
 
+## Current DeepInfer is a separate integration target
+
+The [24 October DeepInfer audit](DEEPINFER_APPLICABILITY.md) traces the official
+framework and its actual FlashMLA gitlink. Non-fused NVIDIA decode retains a
+separate combine when split-KV is enabled; fused decode explicitly disables
+split-KV. The fused implementation already uses TMA and CTA clusters. There
+is no universal standalone combine to replace across current model layers.
+
+Porting the hierarchical idea requires new SM100 scheduling, quantized-cache
+and sink/LSE contract work. It cannot reuse the preserved SM90 kernel as a
+drop-in extension. Current upstream validation needs compatible SM100-family
+hardware; future H100 access would validate the historical experiment only.
+RTX measurements validate neither upstream target. No environment or kernel
+change was made as part of the upstream source audit.
+
 ## What is implemented
 
 The preserved `FlashMLA_old_opt` kernel merges partial attention outputs within
@@ -146,10 +161,10 @@ These steps are pending hardware access. They are not completed experiments.
    count, and repeat trials. A single `nvidia-smi` power reading is not energy
    per token. Full-model decoding needs a separate end-to-end experiment.
 
-The latest upstream README records removal of Hopper support on
-30 September 2026, so pin historical sources and do not use current upstream
-HEAD as the Hopper baseline without checking it.
-[Official FlashMLA repository](https://github.com/deepseek-ai/FlashMLA)
+The [pinned upstream release](https://github.com/deepseek-ai/FlashMLA/commit/2e5429fc5653bab6e081f09477126f731882a6a9)
+records removal of Hopper support on 30 September 2026. Use a historical,
+API-compatible Hopper baseline. The current framework/dependency/main pins
+and source hashes are in [the DeepInfer audit](DEEPINFER_SOURCE_AUDIT.json).
 
 ## Research model and novelty gates
 
