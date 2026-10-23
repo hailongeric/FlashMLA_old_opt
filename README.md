@@ -53,6 +53,9 @@ Replace `0` with the free GPU index. This command runs numerical comparisons,
 validation, graph replay and dispatch tests, then an optional short timing run.
 It returns a nonzero status if tests fail or the required GPU tests are skipped.
 See [RTX implementation, validation and limitations](docs/RTX6000D.md).
+The [reduction benchmark report](docs/RTX6000D_REDUCE_BENCHMARK.md) compares the
+optimized backend against the original RTX revision across 13 shapes, with
+separate reduction and full-forward timings.
 
 ## API
 
@@ -107,7 +110,8 @@ SM120 validation; do not interpret the legacy script alone as a correctness test
 | `csrc/flash_fwd_mla_metadata.cu` | Preserved Hopper split/cluster scheduling |
 | `csrc/flash_fwd_mla_kernel.h` | Preserved Hopper attention, DSM exchange and combine |
 | `csrc/cutlass/` | Original CUDA dependency, recorded as a submodule |
-| `tests/test_sm120.py` | Active FP32-reference correctness tests and bounded timing |
+| `tests/test_sm120.py` | Attention, reduction edge-case, CUDA graph and dispatch tests |
+| `benchmarks/benchmark_sm120_reduce.py` | Paired stage and full-forward timings against the frozen RTX baseline |
 | `scripts/rtx6000d_env.sh` | Shared-server environment and project-local caches |
 | `docs/RTX6000D.md` | RTX algorithm, validation and continuation notes |
 | `docs/TMA_REDUCTION.md` | Original H100 reduction design and investigation notes |

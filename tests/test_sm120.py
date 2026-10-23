@@ -145,6 +145,41 @@ class SM120Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'finite'):
             flash_mla_with_kvcache(q, cache, table, lengths, 512, *metadata, softmax_scale=float('nan'))
 
+    @torch.inference_mode()
+    def test_reduce_extreme_weights_and_tails(self):
+        from flash_mla_old.sm120 import _launch_merge
+        # Non-power-of-two split counts and row tails exercise both merge paths.
+        for dtype in (torch.bfloat16, torch.float16):
+            for sq, hq in ((1, 1), (1, 3), (3, 43), (3, 171)):
+                rows = sq * hq
+                for splits in (1, 2, 3, 4, 7, 8, 9, 16, 24, 31, 32):
+                    with self.subTest(dtype=dtype, rows=rows, splits=splits):
+                        partial = torch.randn((rows, splits, 512), device='cuda', dtype=torch.float32)
+                        log2_lse = torch.randn((rows, splits), device='cuda', dtype=torch.float32) * 100
+                        log2_lse[0] = -float('inf')
+                        partial[0] = 0  # Attention's invariant for an empty split.
+                        if rows > 1:
+                            log2_lse[1] = -10000
+                            log2_lse[1, -1] = 10000
+                            if splits > 1:
+                                log2_lse[-1, ::2] = -float('inf')
+                        out = torch.empty((1, sq, hq, 512), device='cuda', dtype=dtype)
+                        lse = torch.empty((1, hq, sq), device='cuda', dtype=torch.float32)
+                        _launch_merge(partial, log2_lse, out, lse, sq, hq, splits)
+                        natural = log2_lse.double() * math.log(2)
+                        weights = torch.nan_to_num(natural.softmax(-1), nan=0.0)
+                        expected = (partial.double() * weights[..., None]).sum(1).reshape_as(out).to(dtype)
+                        expected_lse = natural.logsumexp(-1).reshape(1, sq, hq).transpose(1, 2).float()
+                        torch.testing.assert_close(out, expected, atol=0.002 if dtype == torch.bfloat16 else 0.0003, rtol=0.01 if dtype == torch.bfloat16 else 0.002)
+                        torch.testing.assert_close(lse, expected_lse, atol=0.001, rtol=2e-6)
+
+    @torch.inference_mode()
+    def test_single_split_has_no_merge_launch(self):
+        from flash_mla_old import sm120
+        inputs = make_inputs([64, 1], 3, 16, 1, torch.bfloat16)
+        with mock.patch.object(sm120, '_launch_merge', side_effect=AssertionError('Unexpected merge for one split')):
+            check(inputs, True)
+
 
 class DispatchTests(unittest.TestCase):
     def test_cpu_and_unsupported_device(self):

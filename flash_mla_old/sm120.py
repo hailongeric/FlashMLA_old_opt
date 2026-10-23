@@ -1,8 +1,9 @@
 """SM120 paged MLA inference, independent of the Hopper CUDA extension.
 
 Values are the first 512 elements of each 576-element key. Each CTA processes
-16 grouped query rows over one KV split; a second kernel merges the normalized
-partial outputs with log-sum-exp weights. No Hopper DSM/WGMMA is used.
+16 grouped query rows over one KV split. Short single-split requests write the
+final output directly; otherwise a second kernel merges or converts the partial
+outputs. No Hopper DSM/WGMMA is used.
 """
 import math
 
@@ -19,7 +20,7 @@ def _split_attention(
     KS0: tl.constexpr, KS1: tl.constexpr, KS2: tl.constexpr,
     TS0: tl.constexpr, MAX_PAGES: tl.constexpr, NUM_PAGES: tl.constexpr,
     SPLITS: tl.constexpr, SCALE_LOG2: tl.constexpr, CAUSAL: tl.constexpr,
-    BM: tl.constexpr, BN: tl.constexpr,
+    BM: tl.constexpr, BN: tl.constexpr, DIRECT: tl.constexpr = False,
 ):
     tile, split, batch_kv = tl.program_id(0), tl.program_id(1), tl.program_id(2)
     batch, kv_head = batch_kv // HK, batch_kv % HK
@@ -68,8 +69,14 @@ def _split_attention(
     acc /= denom[:, None]
     lse = tl.where(z > 0, m + tl.log2(denom), -float("inf"))
     row_id = (batch * SQ + qpos) * HQ + qhead
-    tl.store(Partial + (row_id[:, None] * SPLITS + split) * 512 + d[None, :], acc, valid_row[:, None])
-    tl.store(PartialLSE + row_id * SPLITS + split, lse, valid_row)
+    if DIRECT:
+        # One split is already the final answer: no FP32 scratch or merge launch.
+        tl.store(Partial + row_id[:, None] * 512 + d[None, :], acc, valid_row[:, None])
+        tl.store(PartialLSE + (batch * HQ + qhead) * SQ + qpos,
+                 lse * 0.6931471805599453, valid_row)
+    else:
+        tl.store(Partial + (row_id[:, None] * SPLITS + split) * 512 + d[None, :], acc, valid_row[:, None])
+        tl.store(PartialLSE + row_id * SPLITS + split, lse, valid_row)
 
 
 @triton.jit
@@ -93,6 +100,42 @@ def _merge_splits(Partial, PartialLSE, Out, LSE,
         qpos, head = rem // HQ, rem % HQ
         natural_lse = tl.where(total > 0, (maximum + tl.log2(denominator)) * 0.6931471805599453, -float("inf"))
         tl.store(LSE + (batch * HQ + head) * SQ + qpos, natural_lse)
+
+
+@triton.jit
+def _copy_single(Partial, PartialLSE, Out, LSE, ROWS: tl.constexpr,
+                 SQ: tl.constexpr, HQ: tl.constexpr, BLOCK: tl.constexpr):
+    # A single normalized partial needs only dtype conversion and LSE layout /
+    # logarithm conversion. Flatten several rows to avoid one CTA per 128 values.
+    index = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    values = tl.load(Partial + index, index < ROWS * 512, 0)
+    tl.store(Out + index, values, index < ROWS * 512)
+    rows = tl.program_id(0) * (BLOCK // 512) + tl.arange(0, BLOCK // 512)
+    lses = tl.load(PartialLSE + rows, rows < ROWS, -float("inf"))
+    batch, rem = rows // (SQ * HQ), rows % (SQ * HQ)
+    qpos, head = rem // HQ, rem % HQ
+    tl.store(LSE + (batch * HQ + head) * SQ + qpos,
+             lses * 0.6931471805599453, rows < ROWS)
+
+
+def _uses_direct_output(splits, max_pages):
+    # Long contexts with occupancy-limited single splits regressed when the
+    # attention epilogue wrote FP16/BF16 directly. Retain its FP32 output there.
+    return splits == 1 and max_pages <= 4
+
+
+def _launch_merge(partial, partial_lse, out, lse, sq, hq, splits):
+    rows = out.numel() // 512
+    if splits == 1:
+        _copy_single[(triton.cdiv(rows * 512, 1024),)](
+            partial, partial_lse, out, lse, rows, sq, hq, 1024, num_warps=4)
+        return
+    # Measured on RTX 6000D. Keep the launch policy small and deterministic;
+    # first-use autotuning would add latency and interfere with graph capture.
+    bd, warps = (256, 2) if splits <= 8 else (128, 1)
+    _merge_splits[(rows, 512 // bd)](
+        partial, partial_lse, out, lse, sq, hq, splits,
+        triton.next_power_of_2(splits), bd, num_warps=warps)
 
 
 def get_mla_metadata(cache_seqlens, num_heads_per_head_k, num_heads_k):
@@ -138,20 +181,22 @@ def flash_mla_with_kvcache(q, k_cache, block_table, cache_seqlens, head_dim_v,
     sm_count = torch.cuda.get_device_properties(q.device).multi_processor_count
     splits = min(32, triton.cdiv(block_table.shape[1] * 64, 256),
                  max(1, triton.cdiv(2 * sm_count, batch * hk * row_tiles)))
-    partial = torch.empty((batch * sq * hq, splits, 512), device=q.device, dtype=torch.float32)
-    partial_lse = torch.empty((batch * sq * hq, splits), device=q.device, dtype=torch.float32)
     out = torch.empty((batch, sq, hq, 512), device=q.device, dtype=q.dtype)
     lse = torch.empty((batch, hq, sq), device=q.device, dtype=torch.float32)
+    direct = _uses_direct_output(splits, block_table.shape[1])
+    if direct:
+        partial, partial_lse = out, lse
+    else:
+        partial = torch.empty((batch * sq * hq, splits, 512), device=q.device, dtype=torch.float32)
+        partial_lse = torch.empty((batch * sq * hq, splits), device=q.device, dtype=torch.float32)
     with torch.cuda.device(q.device):
         _split_attention[(row_tiles, splits, batch * hk)](
             q, k_cache, block_table, cache_seqlens, partial, partial_lse,
             sq, hq, hk, *q.stride()[:3], *k_cache.stride()[:3],
             block_table.stride(0), block_table.shape[1], pages,
             splits, softmax_scale * 1.4426950408889634, causal,
-            16, 32, num_warps=4, num_stages=1,
+            16, 32, DIRECT=direct, num_warps=4, num_stages=1,
         )
-        _merge_splits[(batch * sq * hq, 4)](
-            partial, partial_lse, out, lse, sq, hq, splits,
-            triton.next_power_of_2(splits), 128, num_warps=4,
-        )
+        if not direct:
+            _launch_merge(partial, partial_lse, out, lse, sq, hq, splits)
     return out, lse
