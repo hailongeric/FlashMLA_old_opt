@@ -23,7 +23,7 @@ get_mla_metadata(
     // This should match the logic in the MLA kernel.
     static constexpr int block_size_m = 64;
     static constexpr int block_size_n = 64;
-    static constexpr int fixed_overhead_num_blocks = 5;
+    static constexpr int fixed_overhead_num_blocks = 3;
 
     CHECK_DEVICE(seqlens_k);
     TORCH_CHECK(seqlens_k.is_contiguous());
@@ -34,7 +34,9 @@ get_mla_metadata(
     auto options = seqlens_k.options();
 
     auto dprops = at::cuda::getCurrentDeviceProperties();
-    int sm_count = dprops->multiProcessorCount;
+    //! hl-m-sm
+    // int sm_count = dprops->multiProcessorCount;
+    int sm_count = 112;
     int num_sm_parts = sm_count / num_heads_k / cutlass::ceil_div(num_heads_per_head_k, block_size_m);
 
     auto tile_scheduler_metadata = torch::empty({num_sm_parts, TileSchedulerMetaDataSize}, options);

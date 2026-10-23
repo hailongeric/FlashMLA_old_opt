@@ -32,10 +32,12 @@ get_mla_metadata_kernel(__grid_constant__ const Mla_metadata_params params) {
 
         if(all_batch < 4){ //!
             cluster_dim = 8; //!
-            num_sm_parts = 120/ (132/num_sm_parts); //!
+	    //! hl-m-sm 120->112
+            num_sm_parts = 112/ (132/num_sm_parts); //!
         }else if(all_batch < 16){ //!
             cluster_dim = 4; //!
-            num_sm_parts = 120/ (132/num_sm_parts); //!
+            //! hl-m-sm 120->112
+	    num_sm_parts = 112/ (132/num_sm_parts); //!
         }else if(all_batch < 64){ //!
             cluster_dim = 2; //!
         } //!

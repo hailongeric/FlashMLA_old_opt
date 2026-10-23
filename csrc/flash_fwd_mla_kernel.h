@@ -58,7 +58,7 @@ struct Flash_fwd_kernel_traits_mla {
     using TiledMmaO = decltype(make_tiled_mma(
             cute::GMMA::rs_op_selector<Element, Element, ElementAccum, Shape<Int<kBlockM>, Int<kHeadDimV / AtomLayoutNO>, Int<kBlockN>>,
                     GMMA::Major::K, GMMA::Major::MN>(),
-            Layout<Shape<Int<kNWarpsS / 4>, Int<AtomLayoutNO>, _1>>{}));
+            Layout<Shape<Int<kNWarpsS / 4>, Int<AtomLayoutNO>, _1>>{})); //! 1,2,1
 
     using SmemLayoutQ = decltype(tile_to_shape(
             getSmemLayoutK<Element, kHeadDim>(),
@@ -503,14 +503,9 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
             T0_DEBUG_PRINT("split_offset %d,bidb %d  m_block %d n_split_idx %d kNThreadsS %d\n",split_idx, bidb, m_block, n_split_idx&0xffff, kNThreadsS);
 
             Tensor lse = softmax.template normalize_softmax_lse</*Is_dropout=*/false, true>(tOrO, params.scale_softmax);
-            // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
-            //     print(lse);
-            //     printf(" size %d\n",decltype(size(lse))::value);
-            // }
-
             
             // Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementAccum *>(shared_storage.smem_o.data())), typename Kernel_traits::SmemLayoutO{}); // (SMEM_M,SMEM_N)  (64, 512)  //! 
-            Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementAccum *>(shared_storage.smem_sK0.data())), Layout<Shape<_64, _512>, Stride<Int<512>,_1>>{}); // (SMEM_M,SMEM_N)  (64, 512)
+            Tensor sOaccum = make_tensor(make_smem_ptr(reinterpret_cast<ElementAccum *>(shared_storage.smem_sK0.data())), Layout<Shape<_64, _512>, Stride<Int<520>,_1>>{}); // (SMEM_M,SMEM_N)  (64, 512)
 
             // if(threadIdx.x == 0 && blockIdx.z == 0 && blockIdx.x == 0){
             //     print(sOaccum);
@@ -544,7 +539,7 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
             // //! type and format symbols must match
             // T0_DEBUG_PRINT("row_offset_oaccum %ld,row_offset_lse %ld row_offset_lseaccum %ld params.h %d   params.seqlen_q  %d split_idx %d n_split_idx %d\n",row_offset_oaccum,row_offset_lse,row_offset_lseaccum, params.h,  params.seqlen_q ,split_idx, n_split_idx);
 
-            Tensor gO = make_tensor(make_gmem_ptr(reinterpret_cast<Element *>(params.o_ptr) +  row_offset_o),Shape<Int<kBlockM>, Int<kHeadDimV>>{},make_stride( params.o_row_stride, _1{}));
+            Tensor gO = make_tensor(make_gmem_ptr(reinterpret_cast<Element *>(params.o_ptr) +  row_offset_o),Shape<Int<kBlockM>, Int<kHeadDimV>>{},make_stride(params.o_row_stride, _1{}));
                                         //! o_row_stride and kHeadDimV is same in this version
             Tensor gLSEaccum = make_tensor(make_gmem_ptr(reinterpret_cast<ElementAccum *>(params.softmax_lseaccum_ptr)  + row_offset_lseaccum), Shape<Int<kBlockM>>{}, Stride<_1>{});
 
@@ -607,23 +602,15 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
                 Stride<_1>	
             >{});
 
-            float * sO_buf_addr = (float*)sO_addr;
+            ElementAccum * sO_buf_addr = (ElementAccum*)sO_addr;
             Tensor sOdsmBuf = make_tensor(make_smem_ptr(sO_buf_addr), Layout<
                 Shape<_64, _512>,
-                Stride<Int<512>, _1>	// We use stride = 520 here to avoid bank conflict
+                Stride<Int<520>, _1>	
             >{});
-
-            // if(tidx == 0 && blockIdx.z == 0 && blockIdx.x == 0){
-            //     // print(sOdsmBuf);
-            //     for(int i = 0; i < 10; i++){
-            //         printf("en %f %f %f %f %f %f %f %f\n ",sOdsmBuf(i,0),sOdsmBuf(i,10),sOdsmBuf(i,20),sOdsmBuf(i,30),sOdsmBuf(i,40),sOdsmBuf(i,50),sOdsmBuf(i,60), sOdsmBuf(i,70));
-            //     }
-            //     // printf("sOdsmBuf size %d\n",decltype(size(sOdsmBuf))::value);
-            // }
 
             Tensor sOdsmBuf_temp= make_tensor(make_smem_ptr(hl_dsm_sO_temp_buf), Layout<
                 Shape<_32, _512>, 
-                Stride<Int<512>, _1>	// We use stride = 520 here to avoid bank conflict //! 520->
+                Stride<Int<520>, _1>	// We use stride = 520 here to avoid bank conflict //! 520->
             >{});
 
             int num_valid_seq_q = min(params.seqlen_q - m_block*kBlockM, kBlockM);
@@ -650,10 +637,9 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
             }
             cutlass::arch::fence_view_async_shared();  //! to sync barrier
   
-            int stage = max(num_valid_seq_q/ 32,1); // ! todo maybe use the T::BLOCK_SIZE_M? constexpr
-            int H_NUM_PER_SM_PER_STAGE = H_NUM_PER_SM/ stage; //! mod-v
+            int stage = max(num_valid_seq_q / 32,1); // ! todo maybe use the T::BLOCK_SIZE_M? constexpr
+            int H_NUM_PER_SM_PER_STAGE = H_NUM_PER_SM / stage; //! mod-v
             // int H_NUM_PER_SM_PER_STAGE = cute::ceil_div(H_NUM_PER_SM, stage);
-
 
             cluster.sync(); // ! sync all blocks in the cluster  
 
@@ -695,14 +681,6 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
 
             cluster.sync(); // ! sync all blocks in the cluster  
 
-            // if(tidx == 0 && blockIdx.z == 0 && blockIdx.x == 0){
-            //     // print(sOdsmBuf);
-            //     for(int i = 0; i < 10; i++){
-            //         printf("ed %f %f %f %f %f %f %f %f\n ",sOdsmBuf_temp(i,0),sOdsmBuf_temp(i,10),sOdsmBuf_temp(i,20),sOdsmBuf_temp(i,30), sOdsmBuf_temp(i,40),sOdsmBuf_temp(i,50),sOdsmBuf_temp(i,60), sOdsmBuf_temp(i,70));
-            //     }
-            //     // printf("sOdsmBuf size %d\n",decltype(size(sOdsmBuf))::value);
-            // }
-
             CUTLASS_PRAGMA_UNROLL //! mod-v
             for (int i = 0; i < MAX_H_NUM_PER_WARP; ++i) { 
                 max_lse[i] =  -INFINITY;
@@ -714,7 +692,6 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
                         if (j != rank_id) {
                             local_lse[i*SPLIT_IN_CLUSTER +j] = sLSE_buf_temp2(SPLIT_IN_CLUSTER*WARP_DIM*i + SPLIT_IN_CLUSTER*warp_idx + j);
                             max_lse[i] = max(max_lse[i], local_lse[i*SPLIT_IN_CLUSTER +j]); // ! max lse and sum lse continue with num head per warp
-                            // !!! last version is error
                         }
                     }
                 }
@@ -732,13 +709,6 @@ __forceinline__ __device__ void compute_attn_1rowblock_splitkv_mla(const Flash_f
                     }
                     sum_lse[h_idx] = (sum_lse[h_idx] == 0.f || sum_lse[h_idx] != sum_lse[h_idx]) ? INFINITY : logf(sum_lse[h_idx]) + max_lse[h_idx]; //!  float global_lse = (sum_lse == 0.f || sum_lse != sum_lse) ? INFINITY : log2f(sum_lse) + max_lse;
                     if(lane_id == 0){
-                        // if(is_no_split){
-                        //     // sLSE_buf(rank_id  + warp_idx* SPLIT_IN_CLUSTER + SPLIT_IN_CLUSTER*WARP_DIM*h_idx) = sum_lse[h_idx]/(float)M_LOG2E ; // ! todo  / M_LOG2E  only last write gmail
-                        //     gSoftmaxLse(rank_id  + warp_idx* SPLIT_IN_CLUSTER + SPLIT_IN_CLUSTER*WARP_DIM*h_idx) = sum_lse[h_idx]/(float)M_LOG2E ;
-                        // }else{
-                        //     // sLSE_buf(rank_id  + warp_idx* SPLIT_IN_CLUSTER + SPLIT_IN_CLUSTER*WARP_DIM*h_idx) = sum_lse[h_idx] ; // ! todo  / M_LOG2E  only last write gmail
-                        //     gSoftmaxLse(rank_id  + warp_idx* SPLIT_IN_CLUSTER + SPLIT_IN_CLUSTER*WARP_DIM*h_idx) = sum_lse[h_idx] ;
-                        // }
                         gLSEaccum(rank_id  + warp_idx* SPLIT_IN_CLUSTER + SPLIT_IN_CLUSTER*WARP_DIM*h_idx) = sum_lse[h_idx] ;
                     }
                 }
@@ -1022,10 +992,12 @@ void run_flash_splitkv_fwd_mla(Flash_fwd_mla_params &params, cudaStream_t stream
         int cluster_dim  = 1; //!
         if(all_batch < 4){ //!
             cluster_dim = 8; //!
-            params.num_sm_parts = 120/ (132/params.num_sm_parts); //!
+            //! hl-m-sm 120->112
+            params.num_sm_parts = 112/ (132/params.num_sm_parts); //!
         }else if(all_batch < 16){ //!
             cluster_dim = 4; //!
-            params.num_sm_parts = 120/ (132/params.num_sm_parts); //! 
+	    //! hl-m-sm 120->112
+            params.num_sm_parts = 112/ (132/params.num_sm_parts); //! 
         }else if(all_batch < 64){ //! 
             cluster_dim = 2; //!
         } //!
