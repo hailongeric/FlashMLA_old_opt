@@ -20,6 +20,10 @@ environment and preservation rules are in [agents.md](../agents.md).
 |---|---|
 | [RTX reduction report](RTX6000D_REDUCE_BENCHMARK.md) | Current optimized reduction policy; paired 13-case measurements from 23 October 2026 |
 | [RTX reduction data](RTX6000D_REDUCE_RESULTS.json) | Raw final timing samples, correctness checks, environment and source hashes |
+| [RTX low-batch characterization](RTX6000D_LOW_BATCH.md) | 24 full-forward cases, 32 controlled reducer cases, exploratory model and reproduction commands; 24 October 2026 |
+| [Low-batch timing samples](RTX6000D_LOW_BATCH_RESULTS.json) | Full-forward/attention/reducer samples and independent FP32 checks |
+| [Controlled split samples](RTX6000D_SPLIT_GRID_RESULTS.json) | Row-by-split timings and FP64 weighted-sum checks, including the small S=1 regression |
+| [Hopper research readiness](HOPPER_RESEARCH_READINESS.md) | Confirmed precedence finding, synchronization concern, historical evidence audit and pending validation protocol |
 | [Initial RTX validation](RTX6000D_VALIDATION.json) | Archived first-port evidence; predates the reduction optimization |
 | [H100 TMA/DSM design](TMA_REDUCTION.md) | Preserved H100 experiment, source provenance and unresolved validation work |
 | [Original upstream README](UPSTREAM_README.md) | Unedited attribution and historical upstream instructions/results |

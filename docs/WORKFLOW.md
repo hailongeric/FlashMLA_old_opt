@@ -123,9 +123,14 @@ mkdir -p ~/nhl_project/moore_tma_pj/docs/runs
 RUN_DIR=$(mktemp -d ~/nhl_project/moore_tma_pj/docs/runs/reduce_XXXXXXXX)
 git rev-parse HEAD > "$RUN_DIR/head.txt"
 git diff --stat > "$RUN_DIR/changes.txt"
-python benchmarks/benchmark_sm120_reduce.py --output "$RUN_DIR" --rounds 15
-printf 'Results: %s/results.json\n' "$RUN_DIR"
+python benchmarks/benchmark_sm120_reduce.py --output "$RUN_DIR/timings" --rounds 15
+printf 'Results: %s/timings/results.json\n' "$RUN_DIR"
 ```
+
+The benchmark requires a fresh output directory. The example above creates a
+parent run directory for provenance and leaves its `timings/` child for the
+benchmark to create. For the low-batch and controlled split research suites,
+see [the characterization report](RTX6000D_LOW_BATCH.md).
 
 The script compares current `sm120.py` with immutable initial RTX commit
 `1f168a52a4bce6d34439991ee63070d6a0c49825`, loaded with `git show` into the run

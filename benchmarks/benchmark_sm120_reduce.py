@@ -38,6 +38,9 @@ CASES = [
     (4, 2, 64, 2, 8192, 'bf16'),
     (1, 1, 128, 1, 32768, 'fp16'),
 ]
+LOW_BATCH_CASES = [(b, 1, 128, 1, length, 'bf16')
+                   for b in (1, 2, 4, 8)
+                   for length in (64, 256, 1024, 4096, 16384, 32768)]
 CONFIGS = [(64, 2), (64, 4), (128, 1), (128, 2), (128, 4),
            (256, 1), (256, 2), (256, 4), (512, 2), (512, 4), (512, 8)]
 
@@ -136,19 +139,36 @@ def main():
     parser.add_argument('--tune', action='store_true')
     parser.add_argument('--tune-copy', action='store_true')
     parser.add_argument('--rounds', type=int, default=9)
+    parser.add_argument('--suite', choices=('default', 'low-batch'), default='default')
+    parser.add_argument('--check-reference', action='store_true',
+                        help='Check both backends against the independent FP32 attention reference before timing')
     args = parser.parse_args()
+    if args.rounds < 1:
+        parser.error('--rounds must be positive')
+    cases = CASES if args.suite == 'default' else LOW_BATCH_CASES
     output = Path(args.output).expanduser().resolve()
     project = Path.home() / 'nhl_project'
     if project.resolve() not in output.parents:
         raise ValueError('--output must be under ~/nhl_project')
-    output.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, exist_ok=False)
     assert torch.cuda.get_device_capability() == (12, 0)
     torch.manual_seed(20261023)
     torch.set_num_threads(2)
     torch.backends.cuda.matmul.allow_tf32 = False
     baseline, baseline_hash = baseline_module(output)
+    reference = None
+    if args.check_reference:
+        spec = importlib.util.spec_from_file_location('_flashmla_reference', REPO / 'tests/test_sm120.py')
+        reference = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(reference)
     props = torch.cuda.get_device_properties(0)
-    result = {'baseline_commit': BASE, 'baseline_sha256': baseline_hash,
+    result = {'suite': args.suite, 'seed': 20261023,
+              'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              'candidate_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
+              'tracked_diff': subprocess.check_output(['git', 'diff', '--name-only', 'HEAD'], cwd=REPO, text=True).splitlines(),
+              'reference_checked': args.check_reference,
+              'reference_sha256': hashlib.sha256((REPO / 'tests/test_sm120.py').read_bytes()).hexdigest() if reference else None,
+              'baseline_commit': BASE, 'baseline_sha256': baseline_hash,
               'candidate_sha256': hashlib.sha256(Path(current.__file__).read_bytes()).hexdigest(),
               'benchmark_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'gpu': props.name, 'sm_count': props.multi_processor_count,
@@ -164,13 +184,22 @@ def main():
         warm.replay()
     torch.cuda.synchronize()
     del warm, warm_args
-    for case in CASES:
+    for case in cases:
         inputs, splits, buffers, attention, merge = setup(case, baseline)
         q = inputs[0]
         expected = baseline.flash_mla_with_kvcache(*inputs)
         actual = current.flash_mla_with_kvcache(*inputs)
         torch.testing.assert_close(actual[0], expected[0], atol=0.001, rtol=0.01)
         torch.testing.assert_close(actual[1], expected[1], atol=2e-4, rtol=2e-5)
+        checks = {}
+        if reference:
+            ref_out, ref_lse = reference.reference(*inputs[:4], scale=inputs[-2], causal=inputs[-1])
+            for name, (out, lse) in [('before', expected), ('after', actual)]:
+                reference.check((*inputs[:4], None), causal=inputs[-1], scale=inputs[-2], result=(out, lse))
+                checks[name] = {'max_abs_output_error': (out.float() - ref_out).abs().max().item(),
+                                'max_abs_lse_error': (lse - ref_lse).abs().max().item(),
+                                'cosine_error': reference.METRICS[-1]['cosine_error']}
+            del ref_out, ref_lse
         direct = current._uses_direct_output(splits, inputs[2].shape[1]) if hasattr(current, '_uses_direct_output') else False
         def attention_after():
             b, sq, hq, hk, length, _ = case
@@ -188,7 +217,7 @@ def main():
                                'reduce_before': merge,
                                'full_before': lambda: baseline.flash_mla_with_kvcache(*inputs),
                                'full_after': lambda: current.flash_mla_with_kvcache(*inputs)}, args.rounds)
-        record = {'shape': list(case), 'splits': splits, 'rows': math.prod(q.shape[:3]),
+        record = {'reference_checks': checks, 'shape': list(case), 'splits': splits, 'rows': math.prod(q.shape[:3]),
                   'scratch_before_bytes': buffers[0].numel() * 4 + buffers[1].numel() * 4,
                   'direct_output': direct, 'scratch_after_bytes': 0 if direct else buffers[0].numel() * 4 + buffers[1].numel() * 4,
                   'timings': timings}
@@ -227,6 +256,7 @@ def main():
             summary['best'] = [best, round(record['tuning'][best]['median_us'], 3)]
         print(json.dumps(summary), flush=True)
     result['gpu_after'] = gpu_state()
+    result['completed_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     (output / 'results.json').write_text(json.dumps(result, indent=2) + '\n')
 
 
