@@ -1,19 +1,10 @@
-import matplotlib.pyplot as plt
-import pandas as pd
+"""Compatibility launcher; historical source moved to benchmarks/legacy."""
+from pathlib import Path
+import runpy
+import sys
 
-file_path = 'all_perf.csv'
 
-df = pd.read_csv(file_path)
-
-names = df['name'].unique()
-
-for name in names:
-    subset = df[df['name'] == name]
-    plt.plot(subset['seqlen'], subset['bw'], label=name)
-
-plt.title('bandwidth')
-plt.xlabel('seqlen')
-plt.ylabel('bw (GB/s)')
-plt.legend()
-
-plt.savefig('bandwidth_vs_seqlen.png')
+if __name__ == "__main__":
+    target = Path(__file__).resolve().parents[1] / "benchmarks" / "legacy" / "visualize.py"
+    print(f"Historical entry point: {target}; see benchmarks/legacy/README.md", file=sys.stderr)
+    runpy.run_path(str(target), run_name="__main__")

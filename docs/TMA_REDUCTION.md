@@ -70,7 +70,7 @@ The current server reports RTX 6000D GPUs with compute capability 12.0. The sour
 
 Porting therefore requires more than changing a compile flag or removing the API check. Review WGMMA use, shared-memory capacity, cluster occupancy, launch attributes, and scheduling assumptions against the target device. The [Blackwell Tuning Guide](https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html) provides resource constraints that differ from Hopper.
 
-The existing `~/nhl_project/nhlpy3` environment and copied extension binaries must also be reconciled before execution: the inspected interpreter is Python 3.12.3, PyTorch is unavailable there, and copied extension filenames include CPython 3.11 builds. No packages, toolkit, driver, or environment were installed or modified for this publication. Keep future setup decisions scoped to `~/nhl_project` and separate them from the source-preservation commit.
+At the initial H100 source-preservation snapshot, `~/nhl_project/nhlpy3` used Python 3.12.3 without PyTorch, and copied extension filenames included CPython 3.11 builds. No environment changes were made in that preservation commit. The subsequent RTX port installed the scoped environment described in [RTX6000D.md](RTX6000D.md); follow [the current workflow](WORKFLOW.md) for today's setup. The copied H100 binaries still do not establish a compatible Python 3.12 H100 build. All further setup must remain under `~/nhl_project`.
 
 ## Validation needed before performance claims
 

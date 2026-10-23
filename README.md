@@ -15,6 +15,13 @@ The H100 CUDA sources are preserved byte-for-byte from commit
 the copied Hopper binaries. Hopper `compute_90a` code is not forward-compatible
 with Blackwell; see [NVIDIA's compatibility guide](https://docs.nvidia.com/cuda/blackwell-compatibility-guide/index.html).
 
+## Start here
+
+- [Operation and usage workflow](docs/WORKFLOW.md): environment checks, inference,
+  correctness tests, paired benchmarking and troubleshooting.
+- [Documentation index](docs/README.md) and [code map](docs/CODE_MAP.md).
+- [agents.md](agents.md): shared-server environment, limitations and preservation rules.
+
 ## Run on this shared server
 
 ```bash
@@ -27,12 +34,11 @@ and build caches or temporary files under `~/nhl_project`. No conda or global
 installation is used. The old `moore_tma_pj/FlashMLA_old_opt` path remains a
 compatibility symlink.
 
-The tested dependency selection is PyTorch **2.9.1+cu128** with Triton **3.5.1** on
-Python **3.12.3**. For a fresh copy of this project environment, install only there:
+The existing environment has Python **3.12.3**, PyTorch **2.9.1+cu128** and
+Triton **3.5.1**. Routine use requires no installation. If the editable package
+needs relinking, use this checkout and the active environment:
 
 ```bash
-python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cu128
-python -m pip install setuptools wheel
 FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-build-isolation --no-deps -e .
 ```
 
@@ -46,11 +52,12 @@ After selecting a free physical GPU on the shared machine:
 
 ```bash
 nvidia-smi
-CUDA_VISIBLE_DEVICES=0 python tests/test_sm120.py --benchmark
+CUDA_VISIBLE_DEVICES=0 python examples/mla_inference.py
+CUDA_VISIBLE_DEVICES=0 python tests/test_sm120.py
 ```
 
-Replace `0` with the free GPU index. This command runs numerical comparisons,
-validation, graph replay and dispatch tests, then an optional short timing run.
+Replace `0` with the free GPU index. The example demonstrates the complete API;
+the test command runs numerical comparisons, validation, graph replay and dispatch checks.
 It returns a nonzero status if tests fail or the required GPU tests are skipped.
 See [RTX implementation, validation and limitations](docs/RTX6000D.md).
 The [reduction benchmark report](docs/RTX6000D_REDUCE_BENCHMARK.md) compares the
@@ -112,6 +119,9 @@ SM120 validation; do not interpret the legacy script alone as a correctness test
 | `csrc/cutlass/` | Original CUDA dependency, recorded as a submodule |
 | `tests/test_sm120.py` | Attention, reduction edge-case, CUDA graph and dispatch tests |
 | `benchmarks/benchmark_sm120_reduce.py` | Paired stage and full-forward timings against the frozen RTX baseline |
+| `examples/mla_inference.py` | Complete RTX paged-cache inference example |
+| `scripts/check_env.py` | Environment, device and import-path preflight |
+| `benchmarks/legacy/` | Historical comparison scripts; old paths forward here |
 | `scripts/rtx6000d_env.sh` | Shared-server environment and project-local caches |
 | `docs/RTX6000D.md` | RTX algorithm, validation and continuation notes |
 | `docs/TMA_REDUCTION.md` | Original H100 reduction design and investigation notes |
