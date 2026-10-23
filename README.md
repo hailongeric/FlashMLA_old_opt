@@ -1,92 +1,122 @@
-# FlashMLA old kernel cluster reduction experiments
+# FlashMLA old kernel experiments: H100 and RTX 6000D
 
-This repository contains an experimental FlashMLA decoding implementation that merges split-KV attention results within CUDA thread-block clusters. It uses TMA bulk copies to exchange partial outputs through distributed shared memory (DSM), followed by a software softmax-weighted reduction. The goal is to reduce global intermediate traffic and the work left for the final combine kernel.
+This repository retains the experimental H100 TMA/DSM cluster reduction and adds
+an independent Triton backend for **RTX 6000D (compute capability 12.0)**. Both use
+the `flash_mla_old` Python API. Dispatch follows the input tensor's device.
 
-The project was developed on an **NVIDIA H100**. It is an experimental Hopper implementation, not a validated port to the current RTX 6000D machine. The Python package is **`flash_mla_old`**, and the compiled extension is **`flash_mla_old_cuda`**. Other FlashMLA checkouts in the surrounding workspace build different packages, so verify the module actually imported during comparisons.
+| GPU | Execution path | Build |
+|---|---|---|
+| H100 / Hopper, SM90 | Original `flash_mla_old_cuda` extension, including the existing cluster reduction tuning | Default `sm_90a` CUDA build |
+| RTX 6000D, SM120 | Triton paged split-KV attention and FP32 weighted merge | Python package only; Triton JIT compiles for the GPU |
+| Other architectures | Explicit unsupported-device error | No implicit fallback |
 
-## Current source changes
+The H100 CUDA sources are preserved byte-for-byte from commit
+`10c778c1f1673c344fe57447447653e4a0c623ee`. The RTX path does not execute or rebuild
+the copied Hopper binaries. Hopper `compute_90a` code is not forward-compatible
+with Blackwell; see [NVIDIA's compatibility guide](https://docs.nvidia.com/cuda/blackwell-compatibility-guide/index.html).
 
-The existing kernel work preserved in this revision changes:
-
-- The metadata scheduling overhead from 5 to 3 blocks.
-- The host scheduling SM budget to a fixed value of 112.
-- The small-workload scheduling and launch budget from 120 to 112, while retaining the existing formulas based on 132.
-- The FP32 output and DSM receive layouts to a 520-float physical row stride for 512 logical output values.
-
-These are retained tuning experiments. This documentation update does not establish their correctness or performance on a new GPU. See [the reduction design and continuation notes](docs/TMA_REDUCTION.md) for the algorithm, source map, synchronization concerns, and validation priorities.
-
-## Repository layout
-
-| Path | Purpose |
-|---|---|
-| `csrc/flash_api.cpp` | Python binding, tensor checks, metadata allocation, scheduling parameters and forward dispatch. |
-| `csrc/flash_fwd_mla_metadata.cu` | Split scheduling, cluster eligibility and compressed split counts. |
-| `csrc/flash_fwd_mla_kernel.h` | Partial attention, DSM exchange, weighted cluster merge, final combine and launch selection. |
-| `csrc/cutlass/` | CUTLASS dependency recorded as a Git submodule. |
-| `flash_mla_old/` | Python package interface. |
-| `tests/test_flash_mla.py` | Current experimental entry point and reference helpers. |
-| `setup.py` | Extension build configuration targeting `compute_90a`/`sm_90a`. |
-| `docs/TMA_REDUCTION.md` | Technical design, current limitations and continuation checklist. |
-| `docs/UPSTREAM_README.md` | Preserved previous README with upstream context and attribution. |
-
-In the reorganized development workspace, this checkout is located at:
-
-```text
-~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
-```
-
-The old `moore_tma_pj/FlashMLA_old_opt` path is a compatibility symlink. Repository source paths above remain relative, so a standalone checkout does not need the surrounding workspace layout.
-
-## Existing environment
-
-On the shared server, use the existing environment:
+## Run on this shared server
 
 ```bash
 cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
-source ~/nhl_project/nhlpy3/bin/activate
+source scripts/rtx6000d_env.sh
 ```
 
-Keep operations and generated files under `~/nhl_project`. Do not install conda, change global packages, or follow historical machine-specific installation paths from archived notes. The previous README is retained for provenance; its installation command is not the current shared-server procedure.
+The script activates `~/nhl_project/nhlpy3` and places Python, Triton, CUDA, pip,
+and build caches or temporary files under `~/nhl_project`. No conda or global
+installation is used. The old `moore_tma_pj/FlashMLA_old_opt` path remains a
+compatibility symlink.
 
-At the 23 October 2026 inspection, the current machine reported RTX 6000D GPUs with compute capability 12.0, the existing environment used Python 3.12.3 and did not expose PyTorch, and the default `nvcc` reported CUDA 12.0.140. Copied binary artifacts include CPython 3.11 extensions. These observations do not describe a working build environment for this repository.
+The tested dependency selection is PyTorch **2.9.1+cu128** with Triton **3.5.1** on
+Python **3.12.3**. For a fresh copy of this project environment, install only there:
 
-The current API explicitly checks for compute capability 9.0, and the build targets Hopper architecture-specific instructions. Do not remove that guard as a substitute for a port. No CUDA compilation, installation, inference, or GPU correctness/performance run was performed while preparing this revision.
+```bash
+python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cu128
+python -m pip install setuptools wheel
+FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-build-isolation --no-deps -e .
+```
 
-## API identity
+Use the existing installation when already present. `FLASH_MLA_SKIP_CUDA_BUILD=1`
+skips the Hopper extension and CUTLASS submodule command. The RTX path uses the
+CUDA runtime and compiler components supplied by the wheels; it does not depend
+on the server's default CUDA 12.0 `nvcc`. Copied CPython 3.11 `.so` files are not
+usable with Python 3.12 and are not loaded by this path.
 
-After a compatible build has been independently established, the package-level API is:
+After selecting a free physical GPU on the shared machine:
+
+```bash
+nvidia-smi
+CUDA_VISIBLE_DEVICES=0 python tests/test_sm120.py --benchmark
+```
+
+Replace `0` with the free GPU index. This command runs numerical comparisons,
+validation, graph replay and dispatch tests, then an optional short timing run.
+It returns a nonzero status if tests fail or the required GPU tests are skipped.
+See [RTX implementation, validation and limitations](docs/RTX6000D.md).
+
+## API
 
 ```python
 from flash_mla_old import get_mla_metadata, flash_mla_with_kvcache
 
-tile_scheduler_metadata, num_splits = get_mla_metadata(
-    cache_seqlens,
-    s_q * h_q // h_kv,
-    h_kv,
-)
-
+metadata, num_splits = get_mla_metadata(cache_seqlens, s_q * h_q // h_kv, h_kv)
 out, lse = flash_mla_with_kvcache(
-    q,
-    kvcache,
-    block_table,
-    cache_seqlens,
-    dv,
-    tile_scheduler_metadata,
-    num_splits,
-    causal=True,
+    q, kvcache, block_table, cache_seqlens, 512,
+    metadata, num_splits, causal=True,
 )
 ```
 
-The implemented kernel configuration uses a 64-token page, QK dimension 576, value dimension 512, and shared K/V storage. BF16 and optional FP16 paths exist, with FP32 accumulation. Some specialization checks use assertions in a build configured with `-DNDEBUG`; the presence of an assertion alone is not evidence of a reliable runtime guard.
+Inputs use Q/K dimension **576**, value dimension **512**, **64-token pages**,
+and FP16 or BF16. Values share the first 512 channels of the key cache. Query
+heads must be divisible by KV heads. Output has shape `(batch, seq_q, heads_q,
+512)` in the input dtype; LSE has shape `(batch, heads_q, seq_q)` in FP32 and uses
+the natural logarithm. Causal masking aligns the query at the end of the cache.
+This is an inference-only API.
 
-## Test and measurement status
+Metadata is opaque and backend-specific. Always obtain it on the same device as
+the forward inputs. SM120 returns empty marker tensors and reads current lengths
+at launch; Hopper retains its original scheduler and split-prefix tensors. Do not
+transfer metadata between the two backends.
 
-The current test script runs one configured case: batch 1, KV length 32768, 128 query heads, one KV head, one query token, causal attention, and fixed sequence lengths. BF16 is the default; the CLI also accepts FP16.
+## Preserve and continue H100 work
 
-The reference-output calls, output/LSE comparison calls, and timing code are currently commented out. A successful invocation of this script therefore does **not** establish numerical correctness or a benchmark result. Restore and expand those checks in a separate implementation change before relying on new results.
+On an H100 with a compatible PyTorch/CUDA/CUTLASS toolchain, the original build
+remains the default:
 
-Historical profiler files on the development machine are kept outside this publication's selected source files. There is no newly verified speedup claim for this revision. Results from the sibling `FlashMLA` implementation should not be presented as measurements of this checkout without matching source revisions, imported extensions, shapes and timing boundaries.
+```bash
+FLASH_MLA_SKIP_CUDA_BUILD=0 python -m pip install --no-build-isolation --no-deps -e .
+```
+
+The extension is loaded lazily only for Hopper inputs. Existing tuning remains:
+metadata overhead 3 blocks; scheduling budget 112 with the historical formulas
+based on 132; and a 520-float physical row stride for 512 output elements. The
+H100 path was not executed on this RTX-only server. Preserving its code and
+testing dispatch does not establish its numerical correctness or speed.
+
+The legacy `tests/test_flash_mla.py` retains its historical experiment, with
+reference comparisons and timing commented out. Use the new RTX tests for the
+SM120 validation; do not interpret the legacy script alone as a correctness test.
+
+## Source map
+
+| Path | Purpose |
+|---|---|
+| `flash_mla_old/flash_mla_interface.py` | Public API, capability dispatch and lazy Hopper import |
+| `flash_mla_old/sm120.py` | RTX paged attention, stable split merge and input checks |
+| `csrc/flash_api.cpp` | Preserved Hopper binding and scheduling parameters |
+| `csrc/flash_fwd_mla_metadata.cu` | Preserved Hopper split/cluster scheduling |
+| `csrc/flash_fwd_mla_kernel.h` | Preserved Hopper attention, DSM exchange and combine |
+| `csrc/cutlass/` | Original CUDA dependency, recorded as a submodule |
+| `tests/test_sm120.py` | Active FP32-reference correctness tests and bounded timing |
+| `scripts/rtx6000d_env.sh` | Shared-server environment and project-local caches |
+| `docs/RTX6000D.md` | RTX algorithm, validation and continuation notes |
+| `docs/TMA_REDUCTION.md` | Original H100 reduction design and investigation notes |
+| `docs/UPSTREAM_README.md` | Preserved upstream context, citations and attribution |
 
 ## Acknowledgements
 
-This work builds on [DeepSeek FlashMLA](https://github.com/deepseek-ai/FlashMLA), [FlashAttention](https://github.com/Dao-AILab/flash-attention), and [NVIDIA CUTLASS](https://github.com/NVIDIA/cutlass). The original repository license is retained in [LICENSE](LICENSE), and the prior README's citation is retained in [docs/UPSTREAM_README.md](docs/UPSTREAM_README.md).
+This work builds on [DeepSeek FlashMLA](https://github.com/deepseek-ai/FlashMLA),
+[FlashAttention](https://github.com/Dao-AILab/flash-attention),
+[NVIDIA CUTLASS](https://github.com/NVIDIA/cutlass), and
+[Triton](https://github.com/triton-lang/triton). The original [LICENSE](LICENSE)
+and [upstream README](docs/UPSTREAM_README.md) are retained.

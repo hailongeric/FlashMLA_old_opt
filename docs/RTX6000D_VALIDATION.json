@@ -1,0 +1,429 @@
+{
+  "success": true,
+  "tests": 5,
+  "skipped": 0,
+  "seconds": 17.695865392684937,
+  "torch": "2.9.1+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA RTX 6000D",
+  "metrics": [
+    {
+      "shape": [
+        2,
+        2,
+        16,
+        576
+      ],
+      "lengths": [
+        513,
+        129
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0018441081047058105,
+      "cosine_error": 2.096443040500162e-06
+    },
+    {
+      "shape": [
+        2,
+        2,
+        16,
+        576
+      ],
+      "lengths": [
+        65,
+        0
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0023107528686523438,
+      "cosine_error": 2.1922737687418703e-06
+    },
+    {
+      "shape": [
+        2,
+        2,
+        16,
+        576
+      ],
+      "lengths": [
+        513,
+        129
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0018441081047058105,
+      "cosine_error": 2.096443040500162e-06
+    },
+    {
+      "shape": [
+        1,
+        1,
+        1,
+        576
+      ],
+      "lengths": [
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": false,
+      "scale": null,
+      "max_abs_output_error": 0.0,
+      "cosine_error": 0.0
+    },
+    {
+      "shape": [
+        3,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        63,
+        64,
+        65
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.002687692642211914,
+      "cosine_error": 2.2212484509509522e-06
+    },
+    {
+      "shape": [
+        2,
+        2,
+        32,
+        576
+      ],
+      "lengths": [
+        511,
+        1025
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0010693073272705078,
+      "cosine_error": 1.9689528016897384e-06
+    },
+    {
+      "shape": [
+        2,
+        3,
+        12,
+        576
+      ],
+      "lengths": [
+        257,
+        129
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": false,
+      "scale": 0.075,
+      "max_abs_output_error": 0.006691455841064453,
+      "cosine_error": 1.6486061440446065e-06
+    },
+    {
+      "shape": [
+        4,
+        4,
+        8,
+        576
+      ],
+      "lengths": [
+        0,
+        1,
+        2,
+        65
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.008036375045776367,
+      "cosine_error": 5.043247597313893e-07
+    },
+    {
+      "shape": [
+        2,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        0,
+        17
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": false,
+      "scale": null,
+      "max_abs_output_error": 0.004117846488952637,
+      "cosine_error": 2.0399568256834755e-06
+    },
+    {
+      "shape": [
+        1,
+        2,
+        128,
+        576
+      ],
+      "lengths": [
+        4097
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0005722790956497192,
+      "cosine_error": 1.6251718761850498e-06
+    },
+    {
+      "shape": [
+        1,
+        1,
+        128,
+        576
+      ],
+      "lengths": [
+        32768
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0004977881908416748,
+      "cosine_error": 1.4318790135803283e-06
+    },
+    {
+      "shape": [
+        1,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        257
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": false,
+      "scale": 0.0,
+      "max_abs_output_error": 0.000476151704788208,
+      "cosine_error": 1.2897327223981847e-06
+    },
+    {
+      "shape": [
+        1,
+        2,
+        16,
+        576
+      ],
+      "lengths": [
+        257
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": -0.05,
+      "max_abs_output_error": 0.001954019069671631,
+      "cosine_error": 1.9267533843958518e-06
+    },
+    {
+      "shape": [
+        1,
+        1,
+        1,
+        576
+      ],
+      "lengths": [
+        1
+      ],
+      "dtype": "torch.float16",
+      "causal": false,
+      "scale": null,
+      "max_abs_output_error": 0.0,
+      "cosine_error": 0.0
+    },
+    {
+      "shape": [
+        3,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        63,
+        64,
+        65
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0003050565719604492,
+      "cosine_error": 3.2871721344918114e-08
+    },
+    {
+      "shape": [
+        2,
+        2,
+        32,
+        576
+      ],
+      "lengths": [
+        511,
+        1025
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.00014039874076843262,
+      "cosine_error": 3.104494084027465e-08
+    },
+    {
+      "shape": [
+        2,
+        3,
+        12,
+        576
+      ],
+      "lengths": [
+        257,
+        129
+      ],
+      "dtype": "torch.float16",
+      "causal": false,
+      "scale": 0.075,
+      "max_abs_output_error": 0.0004642009735107422,
+      "cosine_error": 2.680279465039348e-08
+    },
+    {
+      "shape": [
+        4,
+        4,
+        8,
+        576
+      ],
+      "lengths": [
+        0,
+        1,
+        2,
+        65
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.0009741783142089844,
+      "cosine_error": 7.116684130892281e-09
+    },
+    {
+      "shape": [
+        2,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        0,
+        17
+      ],
+      "dtype": "torch.float16",
+      "causal": false,
+      "scale": null,
+      "max_abs_output_error": 0.0006102323532104492,
+      "cosine_error": 3.043993146434332e-08
+    },
+    {
+      "shape": [
+        1,
+        2,
+        128,
+        576
+      ],
+      "lengths": [
+        4097
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 6.814301013946533e-05,
+      "cosine_error": 2.54579486380635e-08
+    },
+    {
+      "shape": [
+        1,
+        1,
+        128,
+        576
+      ],
+      "lengths": [
+        32768
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 6.605684757232666e-05,
+      "cosine_error": 2.2459499149363182e-08
+    },
+    {
+      "shape": [
+        1,
+        1,
+        16,
+        576
+      ],
+      "lengths": [
+        257
+      ],
+      "dtype": "torch.float16",
+      "causal": false,
+      "scale": 0.0,
+      "max_abs_output_error": 5.982816219329834e-05,
+      "cosine_error": 2.113853092566842e-08
+    },
+    {
+      "shape": [
+        1,
+        2,
+        16,
+        576
+      ],
+      "lengths": [
+        257
+      ],
+      "dtype": "torch.float16",
+      "causal": true,
+      "scale": -0.05,
+      "max_abs_output_error": 0.0003744363784790039,
+      "cosine_error": 2.9131578926921975e-08
+    },
+    {
+      "shape": [
+        1,
+        1,
+        128,
+        576
+      ],
+      "lengths": [
+        32768
+      ],
+      "dtype": "torch.bfloat16",
+      "causal": true,
+      "scale": null,
+      "max_abs_output_error": 0.000489160418510437,
+      "cosine_error": 1.4032419812792796e-06
+    }
+  ],
+  "benchmark": {
+    "case": "B1 Sq1 Hq128 Hkv1 KV32768 BF16 causal",
+    "eager_mean_ms": 0.17083520889282228,
+    "graph_mean_ms": 0.17142784118652343,
+    "iterations": 100,
+    "boundary": "both kernels; eager includes Python/allocation gaps, graph uses captured allocations; excludes metadata, JIT, reference"
+  },
+  "source_base_commit": "10c778c1f1673c344fe57447447653e4a0c623ee",
+  "tested_source_sha256": {
+    "flash_mla_old/flash_mla_interface.py": "d96ace55fae1d870e60291b307e78fb5587e838a182aae2bcce4daaf50b0bd3e",
+    "flash_mla_old/sm120.py": "ebab923c314fd0c577933a7e72edbd9953c0414d9a4fea3556360edacd222e5f",
+    "tests/test_sm120.py": "7e9b45a5eed974ecf725e38e3df6a0b24bda171f10119505205d5a95190db073",
+    "scripts/rtx6000d_env.sh": "ff6f72f9ab38926f5bba802bc5d2db36fa237a428989debc3fe98b31af1b65b8",
+    "setup.py": "1c3a66d6cad77f33a73a2eb5656f447c8ee4bc22f88b5e9ad6ba127e156a2f85"
+  }
+}

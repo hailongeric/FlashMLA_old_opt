@@ -1,5 +1,7 @@
 # Split KV reduction design and continuation notes
 
+> These notes describe the preserved H100 implementation. The separate RTX 6000D backend and its GPU validation are documented in [RTX6000D.md](RTX6000D.md).
+
 ## Scope and provenance
 
 These notes describe the `FlashMLA_old_opt` working-tree kernel changes reviewed on 23 October 2026, based on commit `91a10bbffb0cae3e4805d19f07fc1a9632777541`. The earlier history includes `e9db64f` for the cluster-reduction version and `a2d0c78` as a baseline candidate. The project owner confirmed that the original experiments were performed on H100.

@@ -5,11 +5,11 @@ import subprocess
 
 from setuptools import setup, find_packages
 
-from torch.utils.cpp_extension import (
-    BuildExtension,
-    CUDAExtension,
-    IS_WINDOWS,
-)
+# Default remains the original Hopper extension build. RTX installs opt out.
+SKIP_CUDA_BUILD = os.getenv("FLASH_MLA_SKIP_CUDA_BUILD", "0") == "1"
+IS_WINDOWS = os.name == "nt"
+if not SKIP_CUDA_BUILD:
+    from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 
 DISABLE_FP16 = os.getenv("FLASH_MLA_DISABLE_FP16", "FALSE") == "TRUE"
 
@@ -39,7 +39,9 @@ def get_features_args():
     return features_args
 
 
-subprocess.run(["git", "submodule", "update", "--init", "csrc/cutlass"])
+if not SKIP_CUDA_BUILD:
+    subprocess.run(["git", "submodule", "update", "--init", "csrc/cutlass"],
+                   cwd=Path(__file__).resolve().parent, check=True)
 
 cc_flag = []
 cc_flag.append("-gencode")
@@ -53,37 +55,39 @@ else:
     cxx_args = ["-O3", "-std=c++17", "-DNDEBUG", "-Wno-deprecated-declarations"]
 
 ext_modules = []
-ext_modules.append(
-    CUDAExtension(
-        name="flash_mla_old_cuda",
-        sources=get_sources(),
-        extra_compile_args={
-            "cxx": cxx_args + get_features_args(),
-            "nvcc": append_nvcc_threads(
-                [
-                    "-O3",
-                    "-std=c++17",
-                    "-DNDEBUG",
-                    "-D_USE_MATH_DEFINES",
-                    "-Wno-deprecated-declarations",
-                    "-U__CUDA_NO_HALF_OPERATORS__",
-                    "-U__CUDA_NO_HALF_CONVERSIONS__",
-                    "-U__CUDA_NO_HALF2_OPERATORS__",
-                    "-U__CUDA_NO_BFLOAT16_CONVERSIONS__",
-                    "--expt-relaxed-constexpr",
-                    "--expt-extended-lambda",
-                    "--use_fast_math",
-                    "--ptxas-options=-v,--register-usage-level=10"
-                ]
-                + cc_flag
-            ) + get_features_args(),
-        },
-        include_dirs=[
-            Path(this_dir) / "csrc",
-            Path(this_dir) / "csrc" / "cutlass" / "include",
-        ],
+if not SKIP_CUDA_BUILD:
+    ext_modules.append(
+        CUDAExtension(
+            name="flash_mla_old_cuda",
+            sources=get_sources(),
+            extra_compile_args={
+                "cxx": cxx_args + get_features_args(),
+                "nvcc": append_nvcc_threads(
+                    [
+                        "-O3",
+                        "-std=c++17",
+                        "-DNDEBUG",
+                        "-D_USE_MATH_DEFINES",
+                        "-Wno-deprecated-declarations",
+                        "-U__CUDA_NO_HALF_OPERATORS__",
+                        "-U__CUDA_NO_HALF_CONVERSIONS__",
+                        "-U__CUDA_NO_HALF2_OPERATORS__",
+                        "-U__CUDA_NO_BFLOAT16_CONVERSIONS__",
+                        "--expt-relaxed-constexpr",
+                        "--expt-extended-lambda",
+                        "--use_fast_math",
+                        "--ptxas-options=-v,--register-usage-level=10"
+                    ]
+                    + cc_flag
+                ) + get_features_args(),
+            },
+            include_dirs=[
+                Path(this_dir) / "csrc",
+                Path(this_dir) / "csrc" / "cutlass" / "include",
+            ],
+        )
     )
-)
+
 
 
 try:
@@ -100,5 +104,5 @@ setup(
     version="1.0.0" + rev,
     packages=find_packages(include=['flash_mla_old']),
     ext_modules=ext_modules,
-    cmdclass={"build_ext": BuildExtension},
+    cmdclass={} if SKIP_CUDA_BUILD else {"build_ext": BuildExtension},
 )
