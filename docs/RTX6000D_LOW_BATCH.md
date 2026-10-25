@@ -1,5 +1,14 @@
 # RTX low-batch characterization: 24 October 2026
 
+## Measurement-method update: 25 October 2026
+
+The tables and raw JSON below preserve the original run. A later review found
+that the timing helper always ran the baseline first in its two-function
+comparisons. The new [confirmation and split-policy report](SM120_SPLIT_POLICY_RESULTS.md)
+records an independent same-method repeat and a corrected, balanced-order
+confirmation. Use that report for current confirmation evidence; do not treat
+the repeated old method as removing its ordering limitation.
+
 This compares the candidate RTX backend with the frozen initial RTX port. These are operator measurements on RTX 6000D, not Hopper/TMA or complete-model results.
 
 ## Results

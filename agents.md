@@ -100,6 +100,31 @@ documentation format.
   upstream experiments, historical Hopper work and measured RTX evidence
   explicitly labeled in documentation.
 
+## Fixed-split research protocol
+
+- Read [the preregistered method](docs/SM120_SPLIT_POLICY_METHOD.md) before using
+  `benchmarks/benchmark_sm120_split_policy.py`. The canonical manifest is
+  `benchmarks/sm120_split_policy_protocol.json`: 12 training cases, 8 held-out
+  cases, and seven candidate split counts including production default.
+- Complete training session A, fit using only its training rows, and hash the
+  frozen policy/prediction record before opening held-out timing outcomes.
+  Sessions B and C must be fresh-process all-case runs acquired independently
+  on an idle GPU. Reuse the fixed input seeds to isolate session drift.
+- Both all-case runs require `--freeze-record` and `--freeze-record-sha256`.
+  Preserve the protocol, analyzer, harness, timing helper and method hashes.
+  Never refit on B/C, change thresholds using their outcomes, or silently drop
+  regressions. A new hypothesis needs a versioned protocol and fresh holdout.
+- The split-policy harness requests 15 rounds and rounds each stage group up
+  to complete cycles: 21 for seven choices, or 18 for six finish choices when
+  the direct-output choice has no finish kernel. This differs from the older
+  paired forward and synthetic reducer suites.
+- Fit and evaluation are CPU-only. Primary policy features use shape/capacity,
+  not host reads of CUDA live lengths. Do not add synchronization or replace
+  production dispatch merely because a research policy has been fitted.
+- Promote reviewed evidence to [the results report](docs/SM120_SPLIT_POLICY_RESULTS.md)
+  and `docs/data/sm120_split_policy_20261025/`. Raw working runs and audit backups
+  stay outside this checkout under `~/nhl_project/moore_tma_pj/docs/`.
+
 ## Development and validation
 
 1. Inspect `git status`, existing instructions and affected callers before any
@@ -113,7 +138,10 @@ documentation format.
    not weaken tolerances. The historical `tests/test_flash_mla.py` has disabled
    reference checks and is insufficient for correctness validation.
 4. Performance changes: use `benchmarks/benchmark_sm120_reduce.py --output`
-   with a unique directory under `~/nhl_project`, normally `--rounds 15`.
+   with a unique directory under `~/nhl_project`, using `--rounds 20` for the
+   forward suite and `--rounds 16` for the standalone split grid. These counts
+   complete the two- and five-function timing-order cycles. Historical
+   15-round records remain evidence with their original ordering limitations.
    Preserve frozen baseline `1f168a52a4bce6d34439991ee63070d6a0c49825` and record
    source hashes, exact shapes/dtypes, environment and all measured regressions.
    Compare reduction and full forward separately; do not claim model or H100

@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "protocol_id": "sm120-split-policy-v1-20261025",
+  "seed": 20261025,
+  "cases": [
+    {
+      "id": "T01",
+      "phase": "train",
+      "batch": 1,
+      "sq": 1,
+      "hq": 16,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 128,
+      "live_lengths": [
+        128
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102500
+    },
+    {
+      "id": "T02",
+      "phase": "train",
+      "batch": 1,
+      "sq": 1,
+      "hq": 128,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 1024,
+      "live_lengths": [
+        1024
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102501
+    },
+    {
+      "id": "T03",
+      "phase": "train",
+      "batch": 1,
+      "sq": 4,
+      "hq": 64,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 8192,
+      "live_lengths": [
+        8192
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        16,
+        20,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102502
+    },
+    {
+      "id": "T04",
+      "phase": "train",
+      "batch": 2,
+      "sq": 1,
+      "hq": 64,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 4096,
+      "live_lengths": [
+        4096,
+        4096
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102503
+    },
+    {
+      "id": "T05",
+      "phase": "train",
+      "batch": 2,
+      "sq": 2,
+      "hq": 128,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 32768,
+      "live_lengths": [
+        32768,
+        32768
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        10,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102504
+    },
+    {
+      "id": "T06",
+      "phase": "train",
+      "batch": 4,
+      "sq": 1,
+      "hq": 128,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 256,
+      "live_lengths": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102505
+    },
+    {
+      "id": "T07",
+      "phase": "train",
+      "batch": 4,
+      "sq": 2,
+      "hq": 64,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 16384,
+      "live_lengths": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        10,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102506
+    },
+    {
+      "id": "T08",
+      "phase": "train",
+      "batch": 8,
+      "sq": 1,
+      "hq": 128,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 2048,
+      "live_lengths": [
+        2048,
+        2048,
+        2048,
+        2048,
+        2048,
+        2048,
+        2048,
+        2048
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102507
+    },
+    {
+      "id": "T09",
+      "phase": "train",
+      "batch": 2,
+      "sq": 1,
+      "hq": 16,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 16384,
+      "live_lengths": [
+        256,
+        16384
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102508
+    },
+    {
+      "id": "T10",
+      "phase": "train",
+      "batch": 4,
+      "sq": 4,
+      "hq": 64,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 8192,
+      "live_lengths": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102509
+    },
+    {
+      "id": "T11",
+      "phase": "train",
+      "batch": 4,
+      "sq": 2,
+      "hq": 128,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 32768,
+      "live_lengths": [
+        64,
+        512,
+        4096,
+        32768
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102510
+    },
+    {
+      "id": "T12",
+      "phase": "train",
+      "batch": 8,
+      "sq": 1,
+      "hq": 64,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 16384,
+      "live_lengths": [
+        256,
+        256,
+        1024,
+        1024,
+        4096,
+        4096,
+        16384,
+        16384
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        10,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102511
+    },
+    {
+      "id": "H01",
+      "phase": "holdout",
+      "batch": 1,
+      "sq": 2,
+      "hq": 16,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 3072,
+      "live_lengths": [
+        3072
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        12,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102512
+    },
+    {
+      "id": "H02",
+      "phase": "holdout",
+      "batch": 3,
+      "sq": 1,
+      "hq": 128,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 6144,
+      "live_lengths": [
+        6144,
+        6144,
+        6144
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        13,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102513
+    },
+    {
+      "id": "H03",
+      "phase": "holdout",
+      "batch": 6,
+      "sq": 2,
+      "hq": 64,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 12288,
+      "live_lengths": [
+        12288,
+        12288,
+        12288,
+        12288,
+        12288,
+        12288
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        7,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102514
+    },
+    {
+      "id": "H04",
+      "phase": "holdout",
+      "batch": 2,
+      "sq": 4,
+      "hq": 128,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 24576,
+      "live_lengths": [
+        24576,
+        24576
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102515
+    },
+    {
+      "id": "H05",
+      "phase": "holdout",
+      "batch": 3,
+      "sq": 1,
+      "hq": 64,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 12288,
+      "live_lengths": [
+        128,
+        1536,
+        12288
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        8,
+        9,
+        16,
+        26,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102516
+    },
+    {
+      "id": "H06",
+      "phase": "holdout",
+      "batch": 6,
+      "sq": 1,
+      "hq": 128,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 24576,
+      "live_lengths": [
+        256,
+        768,
+        2048,
+        4096,
+        8192,
+        24576
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        7,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102517
+    },
+    {
+      "id": "H07",
+      "phase": "holdout",
+      "batch": 4,
+      "sq": 2,
+      "hq": 96,
+      "hk": 1,
+      "dtype": "bf16",
+      "allocated_length": 16384,
+      "live_lengths": [
+        512,
+        2048,
+        8192,
+        16384
+      ],
+      "candidate_splits": [
+        1,
+        4,
+        7,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102518
+    },
+    {
+      "id": "H08",
+      "phase": "holdout",
+      "batch": 8,
+      "sq": 4,
+      "hq": 128,
+      "hk": 2,
+      "dtype": "bf16",
+      "allocated_length": 32768,
+      "live_lengths": [
+        128,
+        128,
+        512,
+        512,
+        2048,
+        2048,
+        8192,
+        32768
+      ],
+      "candidate_splits": [
+        1,
+        2,
+        4,
+        8,
+        9,
+        16,
+        32
+      ],
+      "causal": true,
+      "seed": 2026102519
+    }
+  ]
+}

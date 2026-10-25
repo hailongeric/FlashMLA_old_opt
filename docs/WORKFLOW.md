@@ -123,14 +123,23 @@ mkdir -p ~/nhl_project/moore_tma_pj/docs/runs
 RUN_DIR=$(mktemp -d ~/nhl_project/moore_tma_pj/docs/runs/reduce_XXXXXXXX)
 git rev-parse HEAD > "$RUN_DIR/head.txt"
 git diff --stat > "$RUN_DIR/changes.txt"
-python benchmarks/benchmark_sm120_reduce.py --output "$RUN_DIR/timings" --rounds 15
+python benchmarks/benchmark_sm120_reduce.py --output "$RUN_DIR/timings" --rounds 20
 printf 'Results: %s/timings/results.json\n' "$RUN_DIR"
 ```
 
 The benchmark requires a fresh output directory. The example above creates a
 parent run directory for provenance and leaves its `timings/` child for the
 benchmark to create. For the low-batch and controlled split research suites,
-see [the characterization report](RTX6000D_LOW_BATCH.md).
+see [the characterization report](RTX6000D_LOW_BATCH.md). For a new balanced
+replication, use the current commands below rather than copying the historical
+15-round settings:
+
+```bash
+python benchmarks/benchmark_sm120_reduce.py --suite low-batch --check-reference \
+  --rounds 20 --output "$RUN_DIR/low_batch"
+python benchmarks/benchmark_sm120_split_grid.py \
+  --rounds 16 --output "$RUN_DIR/split_grid"
+```
 
 The script compares current `sm120.py` with immutable initial RTX commit
 `1f168a52a4bce6d34439991ee63070d6a0c49825`, loaded with `git show` into the run
@@ -143,8 +152,14 @@ git cat-file -e 1f168a52a4bce6d34439991ee63070d6a0c49825:flash_mla_old/sm120.py
 
 Both versions receive identical inputs and are checked before timing. The
 benchmark records attention, reduction/finish and full-forward timings over
-13 shapes. Fifteen paired rounds use CUDA events and 128 calls per graph;
-results include raw samples, medians, ranges, environment and source hashes.
+13 shapes. Twenty paired rounds use CUDA events and 128 calls per graph;
+this completes the five-function forward and two-function reducer timing-order
+cycles. Results include raw samples, medians, ranges, environment and source
+hashes. For `benchmark_sm120_split_grid.py`, use `--rounds 16` to complete its
+two-choice cycles. The corrected helper rotates order and reverses only after
+a complete cycle. Earlier 15-round records used an order rule that could retain
+the same first choice in two-function comparisons; preserve those records and
+their limitation rather than relabeling them as balanced measurements.
 Optional `--tune` and `--tune-copy` run larger configuration sweeps; give each
 its own output directory. `tests/test_sm120.py --benchmark` is only a short
 single-case timing convenience, not this paired benchmark.
@@ -200,6 +215,136 @@ tracks. Keep source snapshots and any future audit artifacts under
 After documentation changes, validate links, fenced example syntax, JSON
 provenance and `git diff --check`. Runtime experiments remain subject to the
 existing hardware/environment and correctness rules.
+
+## 8. Run the preregistered fixed-split study
+
+The commands below reproduce the published study. Its held-out outcomes are
+now public; reusing these workloads after changing a model does not create a
+new untouched validation set. A new hypothesis needs a versioned protocol and
+new holdout cases fixed before their outcomes are inspected.
+
+Read [the frozen method](SM120_SPLIT_POLICY_METHOD.md) and
+[the results report](SM120_SPLIT_POLICY_RESULTS.md) before starting a new study.
+The canonical manifest defines 12 training and 8 held-out cases. Each includes
+seven fixed split choices, including the observed production default. This
+harness uses the unchanged RTX kernels and times preallocated producer, finish
+and full pipelines separately. Its requested 15 rounds become 21 for each
+seven-choice group, or 18 for a six-choice finish group. The 128 calls within
+one graph observation are not independent statistical samples.
+
+### Session A and the model freeze
+
+Activate the existing environment, select a GPU verified idle at that time,
+and create a new parent directory. Child output directories must not exist.
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+nvidia-smi
+# Replace 0 with the currently idle physical GPU.
+export CUDA_VISIBLE_DEVICES=0
+mkdir -p ~/nhl_project/moore_tma_pj/docs/runs
+RUN_ROOT=$(mktemp -d ~/nhl_project/moore_tma_pj/docs/runs/split_policy_XXXXXXXX)
+printf 'Keep this study directory: %s\n' "$RUN_ROOT"
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --phase train --validate-protocol-only
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --phase train --rounds 15 --repetitions 128 \
+  --output "$RUN_ROOT/train_A"
+python benchmarks/analyze_sm120_split_policy.py freeze \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --train "$RUN_ROOT/train_A/results.json" \
+  --output "$RUN_ROOT/frozen_policy.json"
+FREEZE_SHA=$(sha256sum "$RUN_ROOT/frozen_policy.json" | cut -d ' ' -f 1)
+printf '%s\n' "$FREEZE_SHA" > "$RUN_ROOT/frozen_policy.sha256"
+```
+
+The analyzer rejects holdout timing rows in training input. It performs
+leave-one-whole-case-out selection, writes coefficients and predictions for all
+20 cases, and refuses to overwrite the output record. Preserve that record,
+its SHA256 and the source hashes before viewing any held-out timings. Changing
+features, candidates, thresholds or workloads afterward requires a new study
+version and untouched holdout data.
+
+### Independent all-case sessions B and C
+
+Run these at separately acquired idle-GPU opportunities, each in a fresh Python
+process. Do not treat two files from one uninterrupted process as independent
+sessions. Re-source the environment in a new shell and restore `RUN_ROOT` to
+the study directory printed above. Recheck GPU availability for each session;
+do not reset a device, kill another job or change clocks. Fixed input seeds are
+reused, so this tests timing/session variation rather than new random inputs.
+
+For session B:
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+: "${RUN_ROOT:?Restore the study directory printed by session A}"
+nvidia-smi
+# Set this only after checking the current device state.
+export CUDA_VISIBLE_DEVICES=0
+FREEZE_SHA=$(cat "$RUN_ROOT/frozen_policy.sha256")
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --phase all --rounds 15 --repetitions 128 \
+  --freeze-record "$RUN_ROOT/frozen_policy.json" \
+  --freeze-record-sha256 "$FREEZE_SHA" \
+  --output "$RUN_ROOT/all_B"
+```
+
+At the next independent idle-GPU opportunity, run session C:
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+: "${RUN_ROOT:?Restore the study directory printed by session A}"
+nvidia-smi
+export CUDA_VISIBLE_DEVICES=0
+FREEZE_SHA=$(cat "$RUN_ROOT/frozen_policy.sha256")
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --phase all --rounds 15 --repetitions 128 \
+  --freeze-record "$RUN_ROOT/frozen_policy.json" \
+  --freeze-record-sha256 "$FREEZE_SHA" \
+  --output "$RUN_ROOT/all_C"
+```
+
+The harness requires the frozen policy and hash for all/holdout phases. It
+checks public API equivalence, independent numerical references and graph
+replay for each candidate, and records source identities and GPU process
+observations. These observations do not reserve the GPU or detect every kind
+of interference. Preserve failed or contention-affected records; defer and
+repeat the entire affected session in a new directory rather than removing
+unfavorable cases. Neither B nor C may update the fitted policy.
+
+### Evaluate the frozen choices
+
+This step uses only the CPU and standard library:
+
+```bash
+python benchmarks/analyze_sm120_split_policy.py evaluate \
+  --protocol benchmarks/sm120_split_policy_protocol.json \
+  --frozen "$RUN_ROOT/frozen_policy.json" \
+  --sessions "$RUN_ROOT/all_B/results.json" "$RUN_ROOT/all_C/results.json" \
+  --output "$RUN_ROOT/evaluation.json"
+```
+
+Evaluation checks completion/correctness, unchanged source and environment
+identity, frozen-policy identity and distinct session records. Report both
+session results, all regressions, the support fallback, sampled-grid regret
+and the cross-session selector comparison. A minimum over measured candidates
+is noisy; it is not a globally optimal split count. With two test sessions,
+bootstrap intervals remain exploratory. Full pipeline time is measured
+directly; do not add separately measured stage medians or claim model serving,
+Hopper TMA or DeepInfer acceleration from this RTX experiment.
+
+Working outputs remain outside the checkout under `~/nhl_project`. Reviewed
+study snapshots are published under [docs/data/sm120_split_policy_20261025](data/sm120_split_policy_20261025/),
+with interpretation in [the results report](SM120_SPLIT_POLICY_RESULTS.md).
+No dependency installation or production-policy update is part of this workflow.
 
 ## Common problems
 

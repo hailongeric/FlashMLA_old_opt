@@ -1,0 +1,14 @@
+{
+  "frozen_utc": "2026-10-25T05:52:41Z",
+  "base": "143b2535c1cdb9218ec23d746704d8fe64c55953",
+  "files": {
+    "benchmarks/benchmark_sm120_reduce.py": "e8d2b44f8f540a5cfafdc430d31280c4138ce5863ab2d4c777c2e580be0d8d08",
+    "benchmarks/benchmark_sm120_split_policy.py": "95dbc5e4b4a3f59270d59a75f78f11dd4ae3658515c6427b121ed449eb1927f7",
+    "benchmarks/analyze_sm120_split_policy.py": "5873277102dffeccf3953e1d098dccc553bc0df1e171551c555d8462bc18388a",
+    "benchmarks/sm120_split_policy_protocol.json": "4fa96c41d85486a41b43a66efd1688cddaff31dc4ce83820c03275c1c30927d7",
+    "docs/SM120_SPLIT_POLICY_METHOD.md": "31c0bc62aecbcd9c12e80f6c4647cbcfcba8c9fbe78b60e2baf7b9314c572d2e"
+  },
+  "protocol_sha256": "4fa96c41d85486a41b43a66efd1688cddaff31dc4ce83820c03275c1c30927d7",
+  "timings_observed": false,
+  "scope": "research scripts and method only; runtime and H100 untouched"
+}

@@ -23,6 +23,9 @@ environment and preservation rules are in [agents.md](../agents.md).
 | [RTX low-batch characterization](RTX6000D_LOW_BATCH.md) | 24 full-forward cases, 32 controlled reducer cases, exploratory model and reproduction commands; 24 October 2026 |
 | [Low-batch timing samples](RTX6000D_LOW_BATCH_RESULTS.json) | Full-forward/attention/reducer samples and independent FP32 checks |
 | [Controlled split samples](RTX6000D_SPLIT_GRID_RESULTS.json) | Row-by-split timings and FP64 weighted-sum checks, including the small S=1 regression |
+| [Fixed-split study method](SM120_SPLIT_POLICY_METHOD.md) | Preregistered training/holdout manifest, capacity-only model families, freeze boundary and uncertainty rules |
+| [Fixed-split study results](SM120_SPLIT_POLICY_RESULTS.md) | Independent-session outcomes, selected split counts, full-pipeline regret and limitations |
+| [Fixed-split study data](data/sm120_split_policy_20261025/) | Reviewed protocol, source identities, frozen predictions and raw measurement/evaluation records |
 | [Current DeepInfer applicability](DEEPINFER_APPLICABILITY.md) | 24 October source audit: conditional integration into non-fused split-KV, fused-path limits, contracts and validation plan |
 | [DeepInfer source provenance](DEEPINFER_SOURCE_AUDIT.json) | Framework/dependency/main pins, source hashes and compared upstream Git blobs; no upstream runtime measurements |
 | [Hopper research readiness](HOPPER_RESEARCH_READINESS.md) | Confirmed precedence finding, synchronization concern, historical evidence audit and pending validation protocol |
@@ -34,6 +37,13 @@ The original document filenames and JSON records remain in place so existing
 links and source-hash provenance stay usable. Current instructions live in the
 workflow; historical snapshots are labeled as such. The upstream README and
 legacy comparison scripts are not the setup instructions for this RTX server.
+
+Current timing guidance uses 20 rounds for paired forward measurements and
+16 for the standalone reducer grid, completing their timing-order cycles.
+Historical 15-round files remain unchanged and retain their documented ordering
+limitations. The new fixed-split harness instead requests 15 and rounds each
+stage group to complete cycles, producing 21 or 18 effective rounds. See
+[the benchmark entry points](../benchmarks/README.md) for the distinction.
 
 New raw runs belong outside the Git checkout, for example
 `~/nhl_project/moore_tma_pj/docs/runs/<unique-run-name>/`. Promote only reviewed,

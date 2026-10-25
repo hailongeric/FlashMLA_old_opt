@@ -83,7 +83,8 @@ def paired_times(functions, rounds, repetitions=128):
     start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
     for round_id in range(rounds):
         order = names[round_id % len(names):] + names[:round_id % len(names)]
-        if round_id % 2:
+        # Balance every position in each complete len(names)-round cycle.
+        if (round_id // len(names)) % 2:
             order = list(reversed(order))
         for name in order:
             start.record()
@@ -174,7 +175,7 @@ def main():
               'gpu': props.name, 'sm_count': props.multi_processor_count,
               'torch': torch.__version__, 'triton': triton.__version__,
               'cuda': torch.version.cuda, 'rounds': args.rounds,
-              'timing': 'CUDA events; 128 calls per CUDA graph; alternating/rotating paired rounds; warm resident buffers; no clock changes; excludes JIT, metadata and H2D',
+              'timing': 'CUDA events; 128 calls per CUDA graph; cyclic rotations with reversal on alternate complete cycles; warm resident buffers; no clock changes; excludes JIT, metadata and H2D',
               'gpu_before': gpu_state(), 'cases': []}
     print(json.dumps({k:v for k,v in result.items() if k != 'cases'}), flush=True)
     # Bring the GPU out of its idle clock state without altering global settings.

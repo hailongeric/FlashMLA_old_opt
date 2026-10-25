@@ -22,6 +22,9 @@ with Blackwell; see [NVIDIA's compatibility guide](https://docs.nvidia.com/cuda/
 - [Documentation index](docs/README.md) and [code map](docs/CODE_MAP.md).
 - [Current DeepInfer applicability](docs/DEEPINFER_APPLICABILITY.md): pinned
   upstream audit, eligible combine paths and the SM100 validation requirement.
+- [Fixed-split study method](docs/SM120_SPLIT_POLICY_METHOD.md) and
+  [results](docs/SM120_SPLIT_POLICY_RESULTS.md): training, frozen policy,
+  independent sessions and held-out full-pipeline selection regret.
 - [agents.md](agents.md): shared-server environment, limitations and preservation rules.
 
 ## Run on this shared server
@@ -65,6 +68,14 @@ See [RTX implementation, validation and limitations](docs/RTX6000D.md).
 The [reduction benchmark report](docs/RTX6000D_REDUCE_BENCHMARK.md) compares the
 optimized backend against the original RTX revision across 13 shapes, with
 separate reduction and full-forward timings.
+
+The [fixed-split study](docs/SM120_SPLIT_POLICY_METHOD.md) compares measured
+split choices with the existing scheduler using the unchanged RTX kernels.
+Its primary learned features use host-visible dimensions and allocated capacity,
+without reading live CUDA lengths back to the CPU. Follow the
+[training and evaluation workflow](docs/WORKFLOW.md#8-run-the-preregistered-fixed-split-study)
+to keep held-out outcomes separate from model selection. This research does not
+install a runtime policy or establish Hopper, DeepInfer or model-level speedups.
 
 ## API
 
@@ -121,6 +132,9 @@ SM120 validation; do not interpret the legacy script alone as a correctness test
 | `csrc/cutlass/` | Original CUDA dependency, recorded as a submodule |
 | `tests/test_sm120.py` | Attention, reduction edge-case, CUDA graph and dispatch tests |
 | `benchmarks/benchmark_sm120_reduce.py` | Paired stage and full-forward timings against the frozen RTX baseline |
+| `benchmarks/benchmark_sm120_split_policy.py` | Fixed-split full-pipeline research harness with correctness and frozen-policy checks |
+| `benchmarks/analyze_sm120_split_policy.py` | CPU-only training, immutable prediction record and independent-session evaluation |
+| `benchmarks/sm120_split_policy_protocol.json` | Fixed 12-training-case and 8-held-out-case manifest |
 | `examples/mla_inference.py` | Complete RTX paged-cache inference example |
 | `scripts/check_env.py` | Environment, device and import-path preflight |
 | `benchmarks/legacy/` | Historical comparison scripts; old paths forward here |

@@ -26,9 +26,15 @@ FlashMLA_old_opt/
     test_flash_mla.py             historical experiment, checks disabled
   benchmarks/
     benchmark_sm120_reduce.py     current paired RTX benchmark
+    benchmark_sm120_split_policy.py  fixed-split training and held-out measurements
+    analyze_sm120_split_policy.py  CPU-only fit, prediction freeze and evaluation
+    sm120_split_policy_protocol.json  preregistered workload and split choices
     legacy/                       historical cross-library comparison code
   benchmark/                      compatibility launchers for old paths
   docs/                           guides, design notes and published evidence
+    SM120_SPLIT_POLICY_METHOD.md   frozen study method and selection rules
+    SM120_SPLIT_POLICY_RESULTS.md  independent-session results and limitations
+    data/sm120_split_policy_20261025/  reviewed raw data and frozen-policy archive
 ```
 
 ## Execution flow
@@ -48,6 +54,24 @@ See [the RTX design](RTX6000D.md) for the input contract and
 The H100 bindings, metadata scheduler and cluster reduction remain in
 `csrc/flash_api.cpp`, `csrc/flash_fwd_mla_metadata.cu` and
 `csrc/flash_fwd_mla_kernel.h`; see [the H100 notes](TMA_REDUCTION.md).
+
+## Fixed-split research files
+
+The [measurement harness](../benchmarks/benchmark_sm120_split_policy.py) runs
+the unchanged RTX kernels with the choices in the
+[canonical protocol](../benchmarks/sm120_split_policy_protocol.json). The
+[CPU analyzer](../benchmarks/analyze_sm120_split_policy.py) fits only training
+data, freezes predictions, and evaluates two later independent sessions.
+This is an offline research policy; it does not change production dispatch,
+kernel code or the runtime split heuristic.
+
+Read the [preregistered method](SM120_SPLIT_POLICY_METHOD.md) for the freeze
+boundary and model rules, the [results report](SM120_SPLIT_POLICY_RESULTS.md)
+for interpretation, and the [study archive](data/sm120_split_policy_20261025/)
+for reviewed raw data, source identities and frozen predictions. The
+[workflow](WORKFLOW.md#8-run-the-preregistered-fixed-split-study) gives the
+exact commands and shared-environment constraints. New working runs remain
+outside this checkout under `~/nhl_project`.
 
 ## Organization and compatibility
 

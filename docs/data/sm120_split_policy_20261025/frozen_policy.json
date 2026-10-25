@@ -1,0 +1,1502 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-25T05:58:09.958289+00:00",
+  "protocol_id": "sm120-split-policy-v1-20261025",
+  "protocol_sha256": "4fa96c41d85486a41b43a66efd1688cddaff31dc4ce83820c03275c1c30927d7",
+  "training_file_sha256": "9d9a38673a1d007794e1f5067e580d6169c4defb618a8f4666ce799714144161",
+  "analyzer_sha256": "5873277102dffeccf3953e1d098dccc553bc0df1e171551c555d8462bc18388a",
+  "training_case_ids": [
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10",
+    "T11",
+    "T12"
+  ],
+  "rounds": 15,
+  "features_contract": "host-visible shapes and allocated capacity only; no live CUDA length reads",
+  "selection_rule": "LOO whole-case; >=1% CV geometric gain and <=10% worst slowdown; local predicted margin max(0.1us,1%); support fallback",
+  "source_hashes": {
+    "runtime": "764f799a5ac19e9f48c35a1ba64efd7d05fb03d60cede78a47263838dabaedf1",
+    "reference": "3255467c5746ad9446ca6593cb5c40452469658739269459667e487a77def5f0",
+    "timing_helper": "e8d2b44f8f540a5cfafdc430d31280c4138ce5863ab2d4c777c2e580be0d8d08",
+    "harness": "95dbc5e4b4a3f59270d59a75f78f11dd4ae3658515c6427b121ed449eb1927f7",
+    "public_interface": "d96ace55fae1d870e60291b307e78fb5587e838a182aae2bcce4daaf50b0bd3e"
+  },
+  "training_environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "python_executable": "/home/ubuntu/nhl_project/nhlpy3/bin/python",
+    "torch": "2.9.1+cu128",
+    "triton": "3.5.1",
+    "cuda": "12.8",
+    "gpu": "NVIDIA RTX 6000D",
+    "capability": [
+      12,
+      0
+    ],
+    "sm_count": 156,
+    "total_memory_bytes": 89173131264,
+    "CUDA_VISIBLE_DEVICES": "0",
+    "process_id": 3703139,
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  },
+  "training_completed_utc": "2026-10-25T05:58:09Z",
+  "model": {
+    "family": "physics",
+    "lambda_": 0.001,
+    "scales": [
+      1.0,
+      145.82215792627272,
+      252.33379725691768,
+      3.8852590769777624,
+      17.049792375632936,
+      12.016853244704368,
+      4.586017354500662,
+      0.9880235200593537,
+      0.6900655593423543
+    ],
+    "yscale": 142.47874915599823,
+    "beta": [
+      0.015421846710429649,
+      0.0,
+      3.7044705656473567,
+      0.0,
+      0.004778132987501581,
+      0.0,
+      0.0,
+      0.022297617847788942,
+      0.0
+    ],
+    "iterations": 135,
+    "converged": true
+  },
+  "support_bounds": {
+    "batch": [
+      1,
+      8
+    ],
+    "sq": [
+      1,
+      4
+    ],
+    "hq": [
+      16,
+      128
+    ],
+    "hk": [
+      1,
+      2
+    ],
+    "group": [
+      16,
+      128
+    ],
+    "rows": [
+      16,
+      1024
+    ],
+    "row_tiles": [
+      1,
+      16
+    ],
+    "producer_groups": [
+      1,
+      64
+    ],
+    "capacity": [
+      128,
+      32768
+    ]
+  },
+  "cross_validation": [
+    {
+      "family": "default",
+      "lambda_": null,
+      "score_log_ratio": 0.0,
+      "cv_geomean_speedup": 1.0,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 4,
+          "default": 4,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.1992432456167177,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 20,
+          "default": 20,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1179784241202544,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1907607838715617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.225769317092047,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.117993576349634,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.2897180604688576,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.5042320487847443,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.3369090777287052,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "constant",
+      "lambda_": null,
+      "score_log_ratio": -0.15532572176295853,
+      "cv_geomean_speedup": 1.1680383546626159,
+      "cv_worst_slowdown_ratio": 1.8722851572464387,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 16,
+          "default": 1,
+          "ratio_to_default": 0.584244323022815,
+          "ratio_to_grid_best": 1.0375952645813427,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 16,
+          "default": 4,
+          "ratio_to_default": 0.4547018625579897,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 16,
+          "default": 20,
+          "ratio_to_default": 0.990629399433184,
+          "ratio_to_grid_best": 1.107502294865505,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 16,
+          "default": 10,
+          "ratio_to_default": 0.9511041498356594,
+          "ratio_to_grid_best": 1.1325375230018049,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 16,
+          "default": 1,
+          "ratio_to_default": 0.782500315317302,
+          "ratio_to_grid_best": 1.5976887735917618,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 16,
+          "default": 10,
+          "ratio_to_default": 0.9318847858478876,
+          "ratio_to_grid_best": 1.1422757775572334,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.9379294346752464,
+          "ratio_to_grid_best": 1.048599083036169,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 16,
+          "default": 32,
+          "ratio_to_default": 1.8722851572464387,
+          "ratio_to_grid_best": 1.8722851572464387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.8099382643073834,
+          "ratio_to_grid_best": 1.0445920073420314,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.7985742144452769,
+          "ratio_to_grid_best": 1.2012409267016864,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 16,
+          "default": 10,
+          "ratio_to_default": 0.7479940234222322,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.001,
+      "score_log_ratio": 0.0,
+      "cv_geomean_speedup": 1.0,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 4,
+          "default": 4,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.1992432456167177,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 20,
+          "default": 20,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1179784241202544,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1907607838715617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.225769317092047,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.117993576349634,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.2897180604688576,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.5042320487847443,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.3369090777287052,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.01,
+      "score_log_ratio": 0.0,
+      "cv_geomean_speedup": 1.0,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 4,
+          "default": 4,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.1992432456167177,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 20,
+          "default": 20,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1179784241202544,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1907607838715617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.225769317092047,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.117993576349634,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.2897180604688576,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.5042320487847443,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.3369090777287052,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.1,
+      "score_log_ratio": 0.278945875875293,
+      "cv_geomean_speedup": 0.7565808513832467,
+      "cv_worst_slowdown_ratio": 28.427315903730154,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 4,
+          "default": 4,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.1992432456167177,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 20,
+          "default": 20,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1179784241202544,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1907607838715617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.225769317092047,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.117993576349634,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 1,
+          "default": 32,
+          "ratio_to_default": 28.427315903730154,
+          "ratio_to_grid_best": 28.427315903730154,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.2897180604688576,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.5042320487847443,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.3369090777287052,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 1.0,
+      "score_log_ratio": 0.0,
+      "cv_geomean_speedup": 1.0,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 4,
+          "default": 4,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.1992432456167177,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 20,
+          "default": 20,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1179784241202544,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.1907607838715617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.225769317092047,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.117993576349634,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.2897180604688576,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 5,
+          "default": 5,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.5042320487847443,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 10,
+          "default": 10,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.3369090777287052,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.001,
+      "score_log_ratio": -0.2532667610589026,
+      "cv_geomean_speedup": 1.2882268797692054,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.5630753560335019,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 16,
+          "default": 4,
+          "ratio_to_default": 0.4547018625579897,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 9,
+          "default": 20,
+          "ratio_to_default": 0.8944716449129217,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8679931442303005,
+          "ratio_to_grid_best": 1.033572196818814,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.48977017817942364,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8823050631329019,
+          "ratio_to_grid_best": 1.0815024747032727,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.9379294346752464,
+          "ratio_to_grid_best": 1.048599083036169,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.8099382643073834,
+          "ratio_to_grid_best": 1.0445920073420314,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.7985742144452769,
+          "ratio_to_grid_best": 1.2012409267016864,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.9186860423645969,
+          "ratio_to_grid_best": 1.2281997096198873,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.01,
+      "score_log_ratio": -0.20540494335116924,
+      "cv_geomean_speedup": 1.228022243734453,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 16,
+          "default": 4,
+          "ratio_to_default": 0.4547018625579897,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 9,
+          "default": 20,
+          "ratio_to_default": 0.8944716449129217,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8679931442303005,
+          "ratio_to_grid_best": 1.033572196818814,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.48977017817942364,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8823050631329019,
+          "ratio_to_grid_best": 1.0815024747032727,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.9379294346752464,
+          "ratio_to_grid_best": 1.048599083036169,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.8099382643073834,
+          "ratio_to_grid_best": 1.0445920073420314,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.7985742144452769,
+          "ratio_to_grid_best": 1.2012409267016864,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.9186860423645969,
+          "ratio_to_grid_best": 1.2281997096198873,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.1,
+      "score_log_ratio": -0.1459200248488935,
+      "cv_geomean_speedup": 1.157103644811426,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 16,
+          "default": 4,
+          "ratio_to_default": 0.4547018625579897,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 9,
+          "default": 20,
+          "ratio_to_default": 0.8944716449129217,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8679931442303005,
+          "ratio_to_grid_best": 1.033572196818814,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8823050631329019,
+          "ratio_to_grid_best": 1.0815024747032727,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.9379294346752464,
+          "ratio_to_grid_best": 1.048599083036169,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.8099382643073834,
+          "ratio_to_grid_best": 1.0445920073420314,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.7985742144452769,
+          "ratio_to_grid_best": 1.2012409267016864,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.9186860423645969,
+          "ratio_to_grid_best": 1.2281997096198873,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 1.0,
+      "score_log_ratio": -0.1459200248488935,
+      "cv_geomean_speedup": 1.157103644811426,
+      "cv_worst_slowdown_ratio": 1.0,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "T01",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.775961226654185,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T02",
+          "selected": 16,
+          "default": 4,
+          "ratio_to_default": 0.4547018625579897,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T03",
+          "selected": 9,
+          "default": 20,
+          "ratio_to_default": 0.8944716449129217,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T04",
+          "selected": 16,
+          "default": 16,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T05",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8679931442303005,
+          "ratio_to_grid_best": 1.033572196818814,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T06",
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 2.0417739677764892,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T07",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.8823050631329019,
+          "ratio_to_grid_best": 1.0815024747032727,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T08",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.9379294346752464,
+          "ratio_to_grid_best": 1.048599083036169,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T09",
+          "selected": 32,
+          "default": 32,
+          "ratio_to_default": 1.0,
+          "ratio_to_grid_best": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T10",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.8099382643073834,
+          "ratio_to_grid_best": 1.0445920073420314,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T11",
+          "selected": 16,
+          "default": 5,
+          "ratio_to_default": 0.7985742144452769,
+          "ratio_to_grid_best": 1.2012409267016864,
+          "fit_converged": true
+        },
+        {
+          "case_id": "T12",
+          "selected": 32,
+          "default": 10,
+          "ratio_to_default": 0.9186860423645969,
+          "ratio_to_grid_best": 1.2281997096198873,
+          "fit_converged": true
+        }
+      ]
+    }
+  ],
+  "predictions": [
+    {
+      "case_id": "T01",
+      "phase": "train",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 10.564112833255114,
+        "2": 9.598646002136704,
+        "4": 7.509439592309793,
+        "8": 7.514440474794749,
+        "9": 7.515690695415987,
+        "16": 7.524442239764659,
+        "32": 7.544445769704481
+      }
+    },
+    {
+      "case_id": "T02",
+      "phase": "train",
+      "default": 4,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 72.35735285794577,
+        "2": 38.900045005805474,
+        "4": 22.186393727190193,
+        "8": 13.859573382792286,
+        "9": 13.869575147762198,
+        "16": 9.756173800412798,
+        "32": 9.916202039931369
+      }
+    },
+    {
+      "case_id": "T03",
+      "phase": "train",
+      "default": 20,
+      "selected": 9,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 540.9096892624585,
+        "4": 139.36198444695555,
+        "8": 72.50737933249442,
+        "9": 66.2522623092261,
+        "16": 72.667407572013,
+        "20": 87.389369649258,
+        "32": 72.98746405105014
+      }
+    },
+    {
+      "case_id": "T04",
+      "phase": "train",
+      "default": 16,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 273.161210560607,
+        "2": 139.3019738571361,
+        "4": 72.3873581528555,
+        "8": 38.960055595624944,
+        "9": 36.87835050952547,
+        "16": 22.306414906829122,
+        "32": 22.466443146347697
+      }
+    },
+    {
+      "case_id": "T05",
+      "phase": "train",
+      "default": 10,
+      "selected": 32,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 2147.360554413688,
+        "4": 541.0497139720374,
+        "8": 541.2097422115559,
+        "9": 482.68195744149267,
+        "10": 652.1502194379926,
+        "16": 541.529798690593,
+        "32": 475.2352924144469
+      }
+    },
+    {
+      "case_id": "T06",
+      "phase": "train",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 18.930940237532663,
+        "2": 13.859573382792286,
+        "4": 9.756173800412798,
+        "8": 9.916202039931369,
+        "9": 9.95620909981101,
+        "16": 14.419672221107287,
+        "32": 21.33490573238974
+      }
+    },
+    {
+      "case_id": "T07",
+      "phase": "train",
+      "default": 10,
+      "selected": 32,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1076.4066466661616,
+        "4": 273.31123703515567,
+        "8": 273.47126527467424,
+        "9": 244.22737641958244,
+        "10": 332.1190712243764,
+        "16": 273.7913217537114,
+        "32": 240.9641250946755
+      }
+    },
+    {
+      "case_id": "T08",
+      "phase": "train",
+      "default": 5,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 139.36198444695555,
+        "4": 72.667407572013,
+        "5": 87.389369649258,
+        "8": 72.98746405105014,
+        "9": 73.06747817080944,
+        "16": 65.26074960484688,
+        "32": 66.54097552099546
+      }
+    },
+    {
+      "case_id": "T09",
+      "phase": "train",
+      "default": 32,
+      "selected": 32,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1076.3691400475245,
+        "2": 540.8946866150037,
+        "4": 273.161210560607,
+        "8": 139.3019738571361,
+        "9": 124.66252634089287,
+        "16": 72.3873581528555,
+        "32": 38.960055595624944
+      }
+    },
+    {
+      "case_id": "T10",
+      "phase": "train",
+      "default": 5,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 540.969699852278,
+        "4": 273.47126527467424,
+        "5": 332.1190712243764,
+        "8": 273.7913217537114,
+        "9": 248.770853660638,
+        "16": 240.9641250946755,
+        "32": 242.24435101082403
+      }
+    },
+    {
+      "case_id": "T11",
+      "phase": "train",
+      "default": 5,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 2147.400561473568,
+        "4": 1076.6866960853192,
+        "5": 1292.2125158652257,
+        "8": 1077.0067525643562,
+        "9": 959.95118302423,
+        "16": 943.7776270539897,
+        "32": 945.0578529701384
+      }
+    },
+    {
+      "case_id": "T12",
+      "phase": "train",
+      "default": 10,
+      "selected": 32,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1076.4066466661616,
+        "4": 273.31123703515567,
+        "8": 273.47126527467424,
+        "9": 244.22737641958244,
+        "10": 332.1190712243764,
+        "16": 273.7913217537114,
+        "32": 240.9641250946755
+      }
+    },
+    {
+      "case_id": "H01",
+      "phase": "holdout",
+      "default": 12,
+      "selected": 32,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 206.21909000265916,
+        "4": 55.62369804939067,
+        "8": 30.533217601527923,
+        "9": 28.444011191701016,
+        "12": 22.176391962220283,
+        "16": 18.00298002505142,
+        "32": 11.7678665317229
+      }
+    },
+    {
+      "case_id": "H02",
+      "phase": "holdout",
+      "default": 13,
+      "selected": 13,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 407.0504525589876,
+        "4": 105.93468188972498,
+        "8": 106.05470306936391,
+        "9": 97.71788095999611,
+        "13": 68.55400622466361,
+        "16": 81.19426321580913,
+        "32": 69.12410682794851
+      }
+    },
+    {
+      "case_id": "H03",
+      "phase": "holdout",
+      "default": 7,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 808.6881732592199,
+        "4": 407.2604896233558,
+        "7": 350.9644364139407,
+        "8": 307.098603131303,
+        "9": 275.78301095508164,
+        "16": 257.37772342419345,
+        "32": 258.33789286130485
+      }
+    },
+    {
+      "case_id": "H04",
+      "phase": "holdout",
+      "default": 5,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1611.9236075998044,
+        "4": 808.9482191484375,
+        "5": 972.181367651609,
+        "8": 809.2682756274746,
+        "9": 725.6800157044586,
+        "16": 709.5064597342183,
+        "32": 710.7866856503668
+      }
+    },
+    {
+      "case_id": "H05",
+      "phase": "holdout",
+      "default": 26,
+      "selected": 26,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 808.6431653168552,
+        "4": 206.27660015123615,
+        "8": 105.93468188972498,
+        "9": 95.49115028183293,
+        "16": 106.05470306936391,
+        "26": 68.55400622466361,
+        "32": 81.19426321580913
+      }
+    },
+    {
+      "case_id": "H06",
+      "phase": "holdout",
+      "default": 7,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1611.9036040698647,
+        "4": 808.8682050286782,
+        "7": 696.0960668403897,
+        "8": 608.3043896852948,
+        "9": 545.6131947430326,
+        "16": 508.38254555251996,
+        "32": 509.3427149896314
+      }
+    },
+    {
+      "case_id": "H07",
+      "phase": "holdout",
+      "default": 7,
+      "selected": 16,
+      "support_fallback": null,
+      "predicted_us": {
+        "1": 1076.4266501961015,
+        "4": 541.1297280917967,
+        "7": 470.19172692489576,
+        "8": 407.50053198263356,
+        "9": 363.63469869999597,
+        "16": 341.0459974669689,
+        "32": 342.0061669040804
+      }
+    },
+    {
+      "case_id": "H08",
+      "phase": "holdout",
+      "default": 2,
+      "selected": 2,
+      "support_fallback": "outside training bounds: rows, producer_groups",
+      "predicted_us": {
+        "1": 4289.548419327899,
+        "2": 4289.868475806936,
+        "4": 3755.031634891247,
+        "8": 3756.3118608073955,
+        "9": 3585.111955498743,
+        "16": 3625.003074171252,
+        "32": 3563.1893586016263
+      }
+    }
+  ]
+}
