@@ -1,0 +1,27 @@
+{
+  "frozen_utc": "2026-10-26T05:37:59Z",
+  "base": "16fa2f3fc16e044b45576c4d2422cb6d2ac6cc12",
+  "files": {
+    "benchmarks/analyze_sm120_length_study.py": "eeb2df1e745aae1cf504f6f6ad8b52abeb2bf5daa132a17240b2eed4c01e30aa",
+    "benchmarks/sm120_length_study_protocol.json": "232a2c87398ee0a22e7f85769ca3f15787d9ad2df8923c5a3ee405eaa30146b5",
+    "docs/SM120_LENGTH_STUDY_METHOD.md": "243f9e29d6d790070c81f8ecadbba7fa92bbb0a9c4a57f4536e6799ccf049103",
+    "tests/test_sm120_length_analysis.py": "7633d7f4366a09b3c9313c00c4ba14eaaf21637bc35debfa2cc5a13825310bbc"
+  },
+  "dependencies": {
+    "benchmarks/benchmark_sm120_split_policy.py": "95dbc5e4b4a3f59270d59a75f78f11dd4ae3658515c6427b121ed449eb1927f7",
+    "benchmarks/benchmark_sm120_reduce.py": "e8d2b44f8f540a5cfafdc430d31280c4138ce5863ab2d4c777c2e580be0d8d08",
+    "benchmarks/analyze_sm120_split_policy.py": "5873277102dffeccf3953e1d098dccc553bc0df1e171551c555d8462bc18388a",
+    "flash_mla_old/sm120.py": "764f799a5ac19e9f48c35a1ba64efd7d05fb03d60cede78a47263838dabaedf1",
+    "tests/test_sm120.py": "3255467c5746ad9446ca6593cb5c40452469658739269459667e487a77def5f0",
+    "docs/data/sm120_split_policy_20261025/frozen_policy.json": "005fed5ad030f2f3cb891b7bb0942a5257a068092b8decf4adaedd8544c4678d"
+  },
+  "timings_observed": false,
+  "scope": "larger-row matched-length study; research-only; unchanged RTX and H100",
+  "user_files": {
+    ".vscode/settings.json": "55844d18b79bf0209afc796c7e429756ae2859867a7b00509cd961a1069ac277",
+    "tests/log": "73d7a925abf2741c0f6abe44354a8ce342d9b6b7623d550d5ee1eb85bdd7ceca",
+    "tests/mla_old_opt_b1h128.ncu-rep": "b283ceddfb8d3d9cc3c1356ba3d008928b4ff4fc646750d05c82939a3f928ebe",
+    "tests/mla_old_opt_b1h128_2.ncu-rep": "44383daa55b7e3a1fd19f68a43c8b16f003aba5a306c7ffd3c0ade75cda77ef5",
+    "tests/mla_old_opt_b1h128_3.ncu-rep": "22cabc0daef1ebf9ffd090e0ad374d631368c9eaf49b776caf4bd7edc6cd4403"
+  }
+}

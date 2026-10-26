@@ -1,0 +1,2089 @@
+{
+  "schema_version": 2,
+  "created_utc": "2026-10-26T05:53:09.723762+00:00",
+  "protocol_id": "sm120-large-row-length-v2-20261026",
+  "protocol_sha256": "232a2c87398ee0a22e7f85769ca3f15787d9ad2df8923c5a3ee405eaa30146b5",
+  "training_file_sha256": "ab4f42e1114a36eef24b2ca787fb06cb145bddf6bdfbe4c72d1d8b5e6893dde4",
+  "analysis_source_hashes": {
+    "analyzer_v2": "eeb2df1e745aae1cf504f6f6ad8b52abeb2bf5daa132a17240b2eed4c01e30aa",
+    "analyzer_v1": "5873277102dffeccf3953e1d098dccc553bc0df1e171551c555d8462bc18388a"
+  },
+  "previous_policy_sha256": "005fed5ad030f2f3cb891b7bb0942a5257a068092b8decf4adaedd8544c4678d",
+  "source_hashes": {
+    "runtime": "764f799a5ac19e9f48c35a1ba64efd7d05fb03d60cede78a47263838dabaedf1",
+    "reference": "3255467c5746ad9446ca6593cb5c40452469658739269459667e487a77def5f0",
+    "timing_helper": "e8d2b44f8f540a5cfafdc430d31280c4138ce5863ab2d4c777c2e580be0d8d08",
+    "harness": "95dbc5e4b4a3f59270d59a75f78f11dd4ae3658515c6427b121ed449eb1927f7",
+    "public_interface": "d96ace55fae1d870e60291b307e78fb5587e838a182aae2bcce4daaf50b0bd3e"
+  },
+  "training_environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "python_executable": "/home/ubuntu/nhl_project/nhlpy3/bin/python",
+    "torch": "2.9.1+cu128",
+    "triton": "3.5.1",
+    "cuda": "12.8",
+    "gpu": "NVIDIA RTX 6000D",
+    "capability": [
+      12,
+      0
+    ],
+    "sm_count": 156,
+    "total_memory_bytes": 89173131264,
+    "CUDA_VISIBLE_DEVICES": "0",
+    "process_id": 69486,
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  },
+  "training_completed_utc": "2026-10-26T05:53:08Z",
+  "training_case_ids": [
+    "L01_full",
+    "L01_quarter",
+    "L01_skew",
+    "L02_full",
+    "L02_quarter",
+    "L02_skew",
+    "L03_full",
+    "L03_quarter",
+    "L03_skew",
+    "L04_full",
+    "L04_quarter",
+    "L04_skew"
+  ],
+  "training_families": [
+    "L01",
+    "L02",
+    "L03",
+    "L04"
+  ],
+  "model": {
+    "family": "constant",
+    "split": 4
+  },
+  "support_bounds": {
+    "batch": [
+      4,
+      16
+    ],
+    "sq": [
+      4,
+      8
+    ],
+    "hq": [
+      64,
+      128
+    ],
+    "hk": [
+      2,
+      4
+    ],
+    "group": [
+      16,
+      64
+    ],
+    "rows": [
+      4096,
+      8192
+    ],
+    "row_tiles": [
+      8,
+      32
+    ],
+    "producer_groups": [
+      256,
+      512
+    ],
+    "capacity": [
+      4096,
+      32768
+    ]
+  },
+  "cross_validation": [
+    {
+      "family": "default",
+      "lambda_": null,
+      "score_log_ratio": 0.0,
+      "cv_geomean_speedup": 1.0,
+      "cv_worst_slowdown_ratio": 1.0,
+      "converged": true,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "constant",
+      "lambda_": null,
+      "score_log_ratio": -0.16470627010302188,
+      "cv_geomean_speedup": 1.1790467465645527,
+      "cv_worst_slowdown_ratio": 1.0455259761426507,
+      "converged": true,
+      "eligible": true,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8991222340351086,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.9379033400569174,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 1.0455259761426507,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8839386820752029,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.9647851350666323,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.7251767700562821,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.8498096626061303,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.9164025634847974,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 1,
+          "ratio_to_default": 0.6156976198331768,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8771193957106617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8953392400550778,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.6748351057594846,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.001,
+      "score_log_ratio": 0.08448025850945147,
+      "cv_geomean_speedup": 0.9189897974261556,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.01,
+      "score_log_ratio": 0.08448025850945147,
+      "cv_geomean_speedup": 0.9189897974261556,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 0.1,
+      "score_log_ratio": 0.12242521548332008,
+      "cv_geomean_speedup": 0.8847720697210082,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.002982008063391,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9926906581583902,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5835958235917964,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "affine",
+      "lambda_": 1.0,
+      "score_log_ratio": 0.033747939259712985,
+      "cv_geomean_speedup": 0.966815170074461,
+      "cv_worst_slowdown_ratio": 1.5241195726699073,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.001,
+      "score_log_ratio": -0.08799440145953587,
+      "cv_geomean_speedup": 1.0919820085056233,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8839386820752029,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.9647851350666323,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.7251767700562821,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.8858794505746658,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.9084573796559533,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.7174657876695223,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8771193957106617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8953392400550778,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.6748351057594846,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.01,
+      "score_log_ratio": -0.08799440145953587,
+      "cv_geomean_speedup": 1.0919820085056233,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8839386820752029,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.9647851350666323,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.7251767700562821,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.8858794505746658,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.9084573796559533,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 1,
+          "ratio_to_default": 0.7174657876695223,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8771193957106617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8953392400550778,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.6748351057594846,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 0.1,
+      "score_log_ratio": 0.03156762068542109,
+      "cv_geomean_speedup": 0.9689254348364308,
+      "cv_worst_slowdown_ratio": 1.8343382184515629,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0135314488530542,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9887273598188093,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.8343382184515629,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8771193957106617,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.8953392400550778,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 4,
+          "default": 2,
+          "ratio_to_default": 0.6748351057594846,
+          "fit_converged": true
+        }
+      ]
+    },
+    {
+      "family": "physics",
+      "lambda_": 1.0,
+      "score_log_ratio": 0.0716928962335816,
+      "cv_geomean_speedup": 0.9308167092390218,
+      "cv_worst_slowdown_ratio": 1.5835958235917964,
+      "converged": true,
+      "eligible": false,
+      "folds": [
+        {
+          "case_id": "L01_full",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_quarter",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L01_skew",
+          "held_family": "L01",
+          "training_families": [
+            "L02",
+            "L03",
+            "L04"
+          ],
+          "selected": 2,
+          "default": 2,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_full",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.0019667662822032,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_quarter",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9817618870687387,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L02_skew",
+          "held_family": "L02",
+          "training_families": [
+            "L01",
+            "L03",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5241195726699073,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_full",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_quarter",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L03_skew",
+          "held_family": "L03",
+          "training_families": [
+            "L01",
+            "L02",
+            "L04"
+          ],
+          "selected": 1,
+          "default": 1,
+          "ratio_to_default": 1.0,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_full",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.002982008063391,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_quarter",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 0.9926906581583902,
+          "fit_converged": true
+        },
+        {
+          "case_id": "L04_skew",
+          "held_family": "L04",
+          "training_families": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "selected": 1,
+          "default": 2,
+          "ratio_to_default": 1.5835958235917964,
+          "fit_converged": true
+        }
+      ]
+    }
+  ],
+  "refit_nonconvergence_fallback": false,
+  "predictions": [
+    {
+      "case_id": "L01_full",
+      "family": "L01",
+      "profile": "full",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L01_quarter",
+      "family": "L01",
+      "profile": "quarter",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L01_skew",
+      "family": "L01",
+      "profile": "skew",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L02_full",
+      "family": "L02",
+      "profile": "full",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L02_quarter",
+      "family": "L02",
+      "profile": "quarter",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L02_skew",
+      "family": "L02",
+      "profile": "skew",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L03_full",
+      "family": "L03",
+      "profile": "full",
+      "phase": "train",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, sq, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "L03_quarter",
+      "family": "L03",
+      "profile": "quarter",
+      "phase": "train",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, sq, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "L03_skew",
+      "family": "L03",
+      "profile": "skew",
+      "phase": "train",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, sq, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "L04_full",
+      "family": "L04",
+      "profile": "full",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L04_quarter",
+      "family": "L04",
+      "profile": "quarter",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "L04_skew",
+      "family": "L04",
+      "profile": "skew",
+      "phase": "train",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "N01_full",
+      "family": "N01",
+      "profile": "full",
+      "phase": "holdout",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 8
+    },
+    {
+      "case_id": "N01_quarter",
+      "family": "N01",
+      "profile": "quarter",
+      "phase": "holdout",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 8
+    },
+    {
+      "case_id": "N01_skew",
+      "family": "N01",
+      "profile": "skew",
+      "phase": "holdout",
+      "default": 2,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 2,
+      "previous_support_fallback": "outside training bounds: sq, rows, row_tiles, producer_groups",
+      "previous_unguarded_selected": 8
+    },
+    {
+      "case_id": "N02_full",
+      "family": "N02",
+      "profile": "full",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "N02_quarter",
+      "family": "N02",
+      "profile": "quarter",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "N02_skew",
+      "family": "N02",
+      "profile": "skew",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 32
+    },
+    {
+      "case_id": "N03_full",
+      "family": "N03",
+      "profile": "full",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "N03_quarter",
+      "family": "N03",
+      "profile": "quarter",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "N03_skew",
+      "family": "N03",
+      "profile": "skew",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "N04_full",
+      "family": "N04",
+      "profile": "full",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "N04_quarter",
+      "family": "N04",
+      "profile": "quarter",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    },
+    {
+      "case_id": "N04_skew",
+      "family": "N04",
+      "profile": "skew",
+      "phase": "holdout",
+      "default": 1,
+      "selected": 4,
+      "support_fallback": null,
+      "predicted_us": {},
+      "previous_selected": 1,
+      "previous_support_fallback": "outside training bounds: batch, hk, rows, producer_groups",
+      "previous_unguarded_selected": 16
+    }
+  ],
+  "selection_rule": "Leave-one-shape-family-out; all three profiles together; >=1% geometric gain and <=10% worst per-case slowdown; convergence required; original local margin and support guard",
+  "features_contract": "Capacity and host-visible shape only; matched length profiles must select the same S; no CUDA length host read"
+}

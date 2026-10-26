@@ -152,3 +152,26 @@ documentation format.
 6. Review the exact diff, run `git diff --check`, and stage explicit paths.
    Commit/push only within the user's authorized scope; never force-push over
    concurrent work. Preserve raw evidence and report limitations honestly.
+
+## Larger-row and matched-length protocol (version 2)
+
+- Read [the v2 method](docs/SM120_LENGTH_STUDY_METHOD.md) and
+  [results](docs/SM120_LENGTH_STUDY_RESULTS.md). Use
+  `sm120_length_study_protocol.json` and `analyze_sm120_length_study.py`;
+  preserve the v1 sources and raw archive. The shared GPU harness is unchanged.
+- Three matched profiles belong to each shape family. Hold out entire families
+  in CV and keep them together in uncertainty estimates; never split sibling
+  profiles between training and validation. Quarter/skew totals must match.
+- Train A has 12 cases. Freeze before B/C; both B/C use `--phase holdout` for
+  the 12 new held-outs, unlike v1's all-case replication. No held-out refit or
+  threshold changes. Nonconverged fits are ineligible; a failed final refit
+  falls back to default. CPU checks: `python tests/test_sm120_length_analysis.py`.
+- All three profiles have the same host-visible shape/capacity, so the offline
+  policy must make the same decision for them. No hidden CUDA-length host read
+  or runtime deployment is authorized merely by fitting a research model.
+- These published cases are now observed. A new model claim requires a new
+  protocol and untouched holdouts. Report the old guard, unguarded diagnostic,
+  matched-token skew, regressions and full-pipeline results separately.
+- Archive reviewed copies in `docs/data/sm120_length_study_20261026/`; all new
+  working runs stay outside the checkout under `~/nhl_project/moore_tma_pj/docs/`.
+  The existing nhlpy3/shared-server/H100 preservation restrictions still apply.

@@ -104,3 +104,21 @@ runtimes, models, tooling and archives. Its overview and move record are at
 `~/nhl_project/moore_tma_pj/README.md` and
 `~/nhl_project/moore_tma_pj/docs/REORGANIZATION.md`. Those server-only files are
 outside this repository; GitHub links cannot resolve to them.
+
+## Larger-row and matched-length research extension
+
+- `benchmarks/sm120_length_study_protocol.json`: eight new shape families and
+  three matched length profiles per family; exact seeds and seven split choices.
+- `benchmarks/analyze_sm120_length_study.py`: CPU-only family-grouped selection,
+  immutable prediction freeze, held-out-only evaluation and profile comparisons;
+  imports unchanged v1 model functions from `analyze_sm120_split_policy.py`.
+- `tests/test_sm120_length_analysis.py`: CPU leakage, matched-total, support and
+  default-tie checks. No Torch or GPU required.
+- [Version 2 method](SM120_LENGTH_STUDY_METHOD.md),
+  [results](SM120_LENGTH_STUDY_RESULTS.md) and
+  [raw data](data/sm120_length_study_20261026/).
+
+Both studies use `benchmark_sm120_split_policy.py`. The v1 protocol/analyzer
+and all previous raw records remain unchanged. Use the version-specific
+[workflow](WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study);
+v2 B/C use `--phase holdout`, while v1 B/C used `--phase all`.

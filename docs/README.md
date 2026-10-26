@@ -48,3 +48,12 @@ stage group to complete cycles, producing 21 or 18 effective rounds. See
 New raw runs belong outside the Git checkout, for example
 `~/nhl_project/moore_tma_pj/docs/runs/<unique-run-name>/`. Promote only reviewed,
 sanitized reports and relevant reproducibility data into this documentation.
+
+## Larger-row and length-distribution study (26 October)
+
+The frozen `constant S=4` policy achieves **1.259x** pooled full-pipeline geometric speedup over the unchanged production heuristic on 12 fresh held-out cases: **1.259x** in B and **1.259x** in C. However, `N01_full` regresses by **12.32% / 12.35%** in B/C. The policy remains offline.
+
+See [the new results](SM120_LENGTH_STUDY_RESULTS.md),
+[method](SM120_LENGTH_STUDY_METHOD.md), and
+[reproduction steps](WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study).
+The study preserves the original kernels and does not deploy the fitted policy.

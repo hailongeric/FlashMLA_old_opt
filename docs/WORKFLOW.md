@@ -346,6 +346,123 @@ study snapshots are published under [docs/data/sm120_split_policy_20261025](data
 with interpretation in [the results report](SM120_SPLIT_POLICY_RESULTS.md).
 No dependency installation or production-policy update is part of this workflow.
 
+## 9. Reproduce the larger-row and matched-length study
+
+Read the [version 2 method](SM120_LENGTH_STUDY_METHOD.md) and
+[results](SM120_LENGTH_STUDY_RESULTS.md). Version 2 reuses the unchanged GPU
+harness but uses a new manifest and CPU analyzer. Its 24 cases comprise eight
+shape families, each with full, quarter and matched-token skew profiles.
+Cross-validation holds out the entire family. B/C contain only the 12 held-out
+cases; do not use the version 1 `--phase all` command for this study.
+
+These published held-outs are now observed evidence. Reproducing them checks
+repeatability; testing a new hypothesis requires a versioned protocol with
+new untouched families, fixed before measuring them.
+
+### Training and freeze
+
+Check device availability first. Use one idle GPU and a new output parent;
+the commands do not install packages or change the runtime split policy.
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+python tests/test_sm120_length_analysis.py
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --phase train --validate-protocol-only
+nvidia-smi
+# Select an idle physical GPU after inspecting its current process state.
+export CUDA_VISIBLE_DEVICES=0
+mkdir -p ~/nhl_project/moore_tma_pj/docs/runs
+LENGTH_RUN=$(mktemp -d ~/nhl_project/moore_tma_pj/docs/runs/length_study_XXXXXXXX)
+printf 'Keep this study directory: %s\n' "$LENGTH_RUN"
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --phase train --rounds 15 --repetitions 128 \
+  --output "$LENGTH_RUN/train_A"
+python benchmarks/analyze_sm120_length_study.py freeze \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --train "$LENGTH_RUN/train_A/results.json" \
+  --previous docs/data/sm120_split_policy_20261025/frozen_policy.json \
+  --output "$LENGTH_RUN/frozen_policy.json"
+LENGTH_SHA=$(sha256sum "$LENGTH_RUN/frozen_policy.json" | cut -d ' ' -f 1)
+printf '%s\n' "$LENGTH_SHA" > "$LENGTH_RUN/frozen_policy.sha256"
+```
+
+Preserve the protocol, analysis/dependency hashes and freeze record before
+opening held-out timings. The analyzer refuses training records containing
+held-out cases; changing a sibling's phase invalidates the family protocol.
+Do not tune features, eligibility or local switching thresholds after this point.
+
+### Two fresh held-out acquisitions
+
+Each session is a separate Python process with a fresh idle-device check.
+Restore `LENGTH_RUN` if using a new shell. Source the environment in every new
+shell. The benchmark checks GPU processes at boundaries; also monitor device
+activity while it runs. If another user's compute process appears, stop only
+your own benchmark, preserve its incomplete record and repeat the entire
+affected session in a new directory when idle. Do not reset or reserve GPUs.
+
+Session B:
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+: "${LENGTH_RUN:?Restore the study directory from training}"
+nvidia-smi
+export CUDA_VISIBLE_DEVICES=0
+LENGTH_SHA=$(cat "$LENGTH_RUN/frozen_policy.sha256")
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --phase holdout --rounds 15 --repetitions 128 \
+  --freeze-record "$LENGTH_RUN/frozen_policy.json" \
+  --freeze-record-sha256 "$LENGTH_SHA" --output "$LENGTH_RUN/session_B"
+```
+
+At the next idle acquisition, session C:
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+: "${LENGTH_RUN:?Restore the study directory from training}"
+nvidia-smi
+export CUDA_VISIBLE_DEVICES=0
+LENGTH_SHA=$(cat "$LENGTH_RUN/frozen_policy.sha256")
+python benchmarks/benchmark_sm120_split_policy.py \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --phase holdout --rounds 15 --repetitions 128 \
+  --freeze-record "$LENGTH_RUN/frozen_policy.json" \
+  --freeze-record-sha256 "$LENGTH_SHA" --output "$LENGTH_RUN/session_C"
+python benchmarks/analyze_sm120_length_study.py evaluate \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --frozen "$LENGTH_RUN/frozen_policy.json" \
+  --sessions "$LENGTH_RUN/session_B/results.json" "$LENGTH_RUN/session_C/results.json" \
+  --output "$LENGTH_RUN/evaluation.json"
+```
+
+For a CPU-only check of the published raw copies, choose a fresh output filename:
+
+```bash
+cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
+source scripts/rtx6000d_env.sh
+mkdir -p ~/nhl_project/moore_tma_pj/docs/runs
+LENGTH_CHECK=$(mktemp -d ~/nhl_project/moore_tma_pj/docs/runs/length_check_XXXXXXXX)
+python benchmarks/analyze_sm120_length_study.py evaluate \
+  --protocol benchmarks/sm120_length_study_protocol.json \
+  --frozen docs/data/sm120_length_study_20261026/frozen_policy.json \
+  --sessions docs/data/sm120_length_study_20261026/session_B.json \
+             docs/data/sm120_length_study_20261026/session_C.json \
+  --output "$LENGTH_CHECK/evaluation.json"
+```
+
+The output must match the archived evaluation exactly. Report all profiles and
+losses, family-cluster uncertainty, cross-session selectors and unchanged-policy
+comparators. Source hashes and CUDA Graph tests do not establish H100 execution
+or DeepInfer performance. The [data archive](data/sm120_length_study_20261026/)
+keeps raw samples, premeasurement hashes, frozen decisions and monitoring records.
+
+
 ## Common problems
 
 | Symptom | Check or action |

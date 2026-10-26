@@ -150,3 +150,12 @@ This work builds on [DeepSeek FlashMLA](https://github.com/deepseek-ai/FlashMLA)
 [NVIDIA CUTLASS](https://github.com/NVIDIA/cutlass), and
 [Triton](https://github.com/triton-lang/triton). The original [LICENSE](LICENSE)
 and [upstream README](docs/UPSTREAM_README.md) are retained.
+
+## Larger-row and length-distribution study (26 October)
+
+The frozen `constant S=4` policy achieves **1.259x** pooled full-pipeline geometric speedup over the unchanged production heuristic on 12 fresh held-out cases: **1.259x** in B and **1.259x** in C. However, `N01_full` regresses by **12.32% / 12.35%** in B/C. The policy remains offline.
+
+See [the new results](docs/SM120_LENGTH_STUDY_RESULTS.md),
+[method](docs/SM120_LENGTH_STUDY_METHOD.md), and
+[reproduction steps](docs/WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study).
+The study preserves the original kernels and does not deploy the fitted policy.

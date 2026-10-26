@@ -62,3 +62,12 @@ from the repository root. Select an idle GPU for each measurement session and
 use fresh output directories under `~/nhl_project`; do not install packages,
 change clocks or alter production dispatch. These measurements concern the RTX
 operator, not H100/TMA, current DeepInfer or end-to-end model performance.
+
+## Larger-row and length-distribution study (26 October)
+
+The frozen `constant S=4` policy achieves **1.259x** pooled full-pipeline geometric speedup over the unchanged production heuristic on 12 fresh held-out cases: **1.259x** in B and **1.259x** in C. However, `N01_full` regresses by **12.32% / 12.35%** in B/C. The policy remains offline.
+
+See [the new results](../docs/SM120_LENGTH_STUDY_RESULTS.md),
+[method](../docs/SM120_LENGTH_STUDY_METHOD.md), and
+[reproduction steps](../docs/WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study).
+The study preserves the original kernels and does not deploy the fitted policy.
