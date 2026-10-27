@@ -1,10 +1,13 @@
 # Operation steps and usage workflow
 
-This guide describes the existing shared RTX 6000D server. Run commands in Bash
+This guide describes the current shared four-card RTX 6000D server, migrated
+on 27 October 2026. It has no international network access. Run commands in Bash
 after connecting to your account. All working files, caches, logs and builds
 must stay under `~/nhl_project`; use the existing `nhlpy3` environment. See
 [agents.md](../agents.md) for the full restrictions and [the file map](CODE_MAP.md)
-for code locations. Credentials do not belong in scripts or documentation.
+for code locations. Credentials do not belong in scripts or documentation. Research milestones
+follow [the hardware-neutral objectives](RESEARCH_OBJECTIVES.md); Hopper is an
+optional implementation track.
 
 ## 1. Open the checkout and activate the environment
 
@@ -21,9 +24,11 @@ in every new shell, including a shell launched by an editor. Executing it with
 `bash scripts/rtx6000d_env.sh` would not activate the parent shell.
 
 The recorded working environment is Python 3.12.3, PyTorch 2.9.1+cu128 and
-Triton 3.5.1. The server's default `nvcc` is CUDA 12.0.140; the RTX backend uses
-Triton's compiler/runtime components instead. The current installation already
-works; routine runs require no package installation.
+Triton 3.5.1. The RTX backend uses Triton's wheel-provided compiler/runtime
+components; routine RTX work does not need a system nvcc installation. The current installation already
+works; routine runs require no package installation. Activation sets
+`PIP_NO_INDEX=1`. Use verified local wheels/sources for any future repair;
+never run upstream download/install scripts on this offline shared host.
 
 ## 2. Select an idle GPU and inspect the environment
 
@@ -42,6 +47,7 @@ cd ~/nhl_project/moore_tma_pj/kernels/FlashMLA_old_opt
 Check both current utilization and memory use. If no device is available,
 defer GPU work or coordinate access; do not terminate jobs or change device
 settings. Visibility selects a GPU for this process; it does not reserve it.
+The machine has physical devices 0–3; check them live before selecting one.
 Physical GPU `$GPU` becomes logical `cuda:0` in the example and tests.
 
 `check_env.py` reports the interpreter, package versions, import paths, cache
@@ -54,7 +60,7 @@ If the editable package is missing, first inspect the environment. When a
 package relink is actually needed, run only from this checkout and active venv:
 
 ```bash
-FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-build-isolation --no-deps -e .
+FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-index --no-build-isolation --no-deps -e .
 ```
 
 This skips the Hopper extension and dependency resolution. Do not omit the flag
@@ -462,6 +468,26 @@ comparators. Source hashes and CUDA Graph tests do not establish H100 execution
 or DeepInfer performance. The [data archive](data/sm120_length_study_20261026/)
 keeps raw samples, premeasurement hashes, frozen decisions and monitoring records.
 
+
+## 10. Work offline and preserve migration provenance
+
+Read [the migration record](MIGRATION_20261027.md) for integrity and validation.
+The canonical checkout, venv and compatibility links retain the same absolute
+paths. Re-source the helper in each shell; this creates fresh project-local
+caches and avoids reusing generated state from the previous GPU host.
+
+Git commits and local bundles work offline. For authorized publication, export
+the intended commit as a verified Git bundle under `~/nhl_project`, move it to
+an authorized connected workstation, verify its base/commit/file hashes, then
+perform a normal fast-forward push there. Transfer the verified publication
+record back. Do not put tokens into remote URLs or files or repeatedly try
+external package/Git downloads from this server.
+
+The 23–26 October timing records retain their original host/GPU identity.
+Migration validation checks correctness and offline operation; acquire a fresh
+baseline before reporting performance on this machine. H100 comparison work
+and the dated upstream port study are optional and have their own compatibility
+requirements; they do not block the current RTX research objectives.
 
 ## Common problems
 

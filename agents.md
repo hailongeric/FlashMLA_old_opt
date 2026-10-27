@@ -6,6 +6,18 @@ Read [docs/WORKFLOW.md](docs/WORKFLOW.md) for operation steps and
 filename is intentional. English Markdown or plain text is the project
 documentation format.
 
+## Current research scope
+
+- Follow [the research objectives](docs/RESEARCH_OBJECTIVES.md). The objective
+  is split-KV attention scheduling and reduction validated on available GPUs.
+  Hopper access or a Hopper TMA implementation is not a project prerequisite.
+- The active host is one shared machine with four RTX 6000D GPUs, migrated on
+  27 October 2026. Select one idle device per routine test/benchmark. Multi-GPU
+  experiments need an explicit protocol; four cards alone imply no speedup.
+- Preserve the original H100/CUTLASS work as an optional implementation track.
+  Research scope does not waive device dispatch, compatibility or evidence
+  requirements. Do not rewrite historical source audits or measured records.
+
 ## Authorized environment and setup
 
 - All server working files, edits, downloads, caches, temporary files, build
@@ -22,19 +34,36 @@ documentation format.
   `~/nhl_project/nhlpy3/bin/activate`, scopes caches/temp paths, disables bytecode
   writes, and configures the existing local Python headers. Source it in each
   execution shell; do not modify shell startup files.
-- Existing validated stack: Python 3.12.3, PyTorch 2.9.1+cu128, Triton 3.5.1;
-  RTX 6000D capability 12.0, 156 SMs, driver 595.99.02. These are recorded
-  observations from 23 October 2026, not a guarantee of future server state.
-- The default system `nvcc` is CUDA 12.0.140 and is not the RTX compiler path.
-  Triton uses compiler/runtime components provided by the installed wheels.
+- Migrated venv stack (revalidated on 27 October 2026): Python 3.12.3, PyTorch 2.9.1+cu128, Triton 3.5.1;
+  RTX 6000D capability 12.0, 156 SMs, driver 595.99.02. The current machine exposes four cards. Recheck live device state before use.
+- The RTX compiler path uses Triton compiler/runtime components from the
+  existing wheels. A system nvcc or Hopper toolchain is not needed for it.
   Python headers were extracted under
   `~/nhl_project/toolchains/python3.12-headers/`; no apt installation was used.
 - Inspect the live environment with `scripts/check_env.py` from outside the
   checkout as shown in the workflow. Verify imported source locations; copied
   `.egg-info` or CPython 3.11 `.so` files are not reliable current-install proof.
 - Only if an editable relink is needed, use the active venv from this checkout:
-  `FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-build-isolation --no-deps -e .`.
+  `FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-index --no-build-isolation --no-deps -e .`.
   Routine tests and benchmarks require no reinstall.
+
+## Offline host and migration
+
+- This host has no international network access. Do not depend on GitHub,
+  PyPI, Hugging Face or other external downloads for startup, tests or builds.
+  `rtx6000d_env.sh` sets `PIP_NO_INDEX=1` for the active shell. This is a scoped
+  offline default, not a global pip configuration change.
+- The project, Git objects/submodules, existing venv and local Python headers
+  were copied directly over the internal network. No packages were installed
+  or upgraded. Reuse `nhlpy3`; do not run an installer to reproduce activation.
+- If a dependency repair is needed, use verified local wheels/sources within
+  `~/nhl_project`, with pinned hashes and the active venv. Never replace shared
+  dependencies or use conda/global tools to work around network restrictions.
+- Use an authorized connected workstation for GitHub publication with verified
+  bundles/patches. Keep credentials transient and transfer/audit files under
+  `~/nhl_project`; do not change `~/.ssh`, global Git settings or startup files.
+- Read [the migration record](docs/MIGRATION_20261027.md). The old host remains
+  a rollback copy. Old benchmark results are not measurements of the new host.
 
 ## Shared-server limitations
 

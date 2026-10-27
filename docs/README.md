@@ -3,10 +3,16 @@
 Start with [the operation and usage workflow](WORKFLOW.md). Repository-wide
 environment and preservation rules are in [agents.md](../agents.md).
 
+Current objectives are hardware-neutral; the active platform is the shared
+four-card RTX 6000D host. Hopper is an optional comparison implementation.
+Historical hardware-specific audits and results retain their original scope.
+
 ## Current operating guides
 
 | Document | Read it for |
 |---|---|
+| [Research objectives](RESEARCH_OBJECTIVES.md) | Active milestones without a Hopper prerequisite |
+| [27 October migration](MIGRATION_20261027.md) | Offline host, copied venv, integrity and validation |
 | [Repository overview](../README.md) | Supported GPUs, quick start and public API |
 | [Operation and usage workflow](WORKFLOW.md) | Activate, inspect, run, validate, benchmark and continue development |
 | [Code and file map](CODE_MAP.md) | Active code, historical scripts, stable paths and generated artifacts |

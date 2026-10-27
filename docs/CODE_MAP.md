@@ -122,3 +122,12 @@ Both studies use `benchmark_sm120_split_policy.py`. The v1 protocol/analyzer
 and all previous raw records remain unchanged. Use the version-specific
 [workflow](WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study);
 v2 B/C use `--phase holdout`, while v1 B/C used `--phase all`.
+
+## Current host and research scope
+
+The four-card RTX 6000D host uses the same canonical checkout and venv paths.
+See [research objectives](RESEARCH_OBJECTIVES.md) and
+[migration record](MIGRATION_20261027.md). The preserved H100 sources remain an
+optional comparison track; they do not constrain the active research goals.
+The activation helper scopes generated files and disables pip index access.
+Original benchmark records and frozen model/source artifacts remain unchanged.

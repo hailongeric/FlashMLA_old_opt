@@ -10,6 +10,8 @@ export XDG_CACHE_HOME="${_mla_root}/.cache"
 export TMPDIR="${_mla_root}/.tmp"
 export PYTHONDONTWRITEBYTECODE=1
 export PIP_DISABLE_PIP_VERSION_CHECK=1
+# This shared host has no international package-index access.
+export PIP_NO_INDEX=1
 _mla_headers="${_mla_root}/toolchains/python3.12-headers/usr/include"
 if [[ -f "${_mla_headers}/python3.12/Python.h" ]]; then
     export CPATH="${_mla_headers}/python3.12:${_mla_headers}${CPATH:+:${CPATH}}"

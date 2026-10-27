@@ -1,8 +1,14 @@
-# FlashMLA old kernel experiments: H100 and RTX 6000D
+# FlashMLA decoding and reduction research
 
-This repository retains the experimental H100 TMA/DSM cluster reduction and adds
-an independent Triton backend for **RTX 6000D (compute capability 12.0)**. Both use
-the `flash_mla_old` Python API. Dispatch follows the input tensor's device.
+This project studies split-KV attention scheduling and weighted reduction for
+MLA inference. The active platform is a shared, single-machine **four-card
+RTX 6000D** server using the SM120 Triton backend. The research objectives do
+not require Hopper hardware. The existing H100 TMA/DSM implementation remains
+preserved as an optional architecture-specific comparison path. Both paths
+use the `flash_mla_old` API with input-device dispatch.
+
+Read [the current research objectives](docs/RESEARCH_OBJECTIVES.md) and
+[27 October migration record](docs/MIGRATION_20261027.md) before starting work.
 
 | GPU | Execution path | Build |
 |---|---|---|
@@ -35,8 +41,9 @@ source scripts/rtx6000d_env.sh
 ```
 
 The script activates `~/nhl_project/nhlpy3` and places Python, Triton, CUDA, pip,
-and build caches or temporary files under `~/nhl_project`. No conda or global
-installation is used. The old `moore_tma_pj/FlashMLA_old_opt` path remains a
+and build caches or temporary files under `~/nhl_project`. Conda and global
+installations are prohibited. This host has no international network access;
+routine use is offline and requires no installation. The old `moore_tma_pj/FlashMLA_old_opt` path remains a
 compatibility symlink.
 
 The existing environment has Python **3.12.3**, PyTorch **2.9.1+cu128** and
@@ -44,13 +51,13 @@ Triton **3.5.1**. Routine use requires no installation. If the editable package
 needs relinking, use this checkout and the active environment:
 
 ```bash
-FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-build-isolation --no-deps -e .
+FLASH_MLA_SKIP_CUDA_BUILD=1 python -m pip install --no-index --no-build-isolation --no-deps -e .
 ```
 
 Use the existing installation when already present. `FLASH_MLA_SKIP_CUDA_BUILD=1`
 skips the Hopper extension and CUTLASS submodule command. The RTX path uses the
 CUDA runtime and compiler components supplied by the wheels; it does not depend
-on the server's default CUDA 12.0 `nvcc`. Copied CPython 3.11 `.so` files are not
+on the system `nvcc`. Copied CPython 3.11 `.so` files are not
 usable with Python 3.12 and are not loaded by this path.
 
 After selecting a free physical GPU on the shared machine:
@@ -101,9 +108,10 @@ the forward inputs. SM120 returns empty marker tensors and reads current lengths
 at launch; Hopper retains its original scheduler and split-prefix tensors. Do not
 transfer metadata between the two backends.
 
-## Preserve and continue H100 work
+## Optional H100 comparison implementation
 
-On an H100 with a compatible PyTorch/CUDA/CUTLASS toolchain, the original build
+This optional track is independent of the current research milestones. On an
+H100 with a compatible PyTorch/CUDA/CUTLASS toolchain, the original build
 remains the default:
 
 ```bash

@@ -71,3 +71,11 @@ See [the new results](../docs/SM120_LENGTH_STUDY_RESULTS.md),
 [method](../docs/SM120_LENGTH_STUDY_METHOD.md), and
 [reproduction steps](../docs/WORKFLOW.md#9-reproduce-the-larger-row-and-matched-length-study).
 The study preserves the original kernels and does not deploy the fitted policy.
+
+## Current offline four-card host
+
+Follow [the objectives](../docs/RESEARCH_OBJECTIVES.md) and
+[migration record](../docs/MIGRATION_20261027.md). Use the copied nhlpy3 venv
+and one available device. Old measurements belong to the previous host;
+acquire a new baseline before making new-host performance comparisons. Routine
+benchmarking requires no installation or international network access.
